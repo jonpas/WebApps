@@ -5,7 +5,9 @@ Various web applications built at Web Technologies (slo. Spletne Tehnologije) us
 
 ## Applications
 
-### Mercury Lists
+### To-do List
+
+_App: `todo`_
 
 To-do lists application featuring lists and items with deadlines and tags.
 
@@ -20,23 +22,38 @@ To-do lists application featuring lists and items with deadlines and tags.
 **Limitations:**
 - Single User
 
+### Doodle (game)
 
-### Project 2
+_App: `doodle`_
 
-_TODO_
+Doodle application featuring draw and guess chat-based multiplayer game with lobbies, login and statistics tracking.
 
+**Features:**
+- _TODO_
 
-### Project 3
+### Ludo (game)
 
-_TODO_
+_App: `ludo`_
 
+Ludo turn-based game application featuring interactive multiplayer game with lobbies, login and statistics tracking.
 
-### Project 4
+**Features:**
+- _TODO_
 
-_TODO_
+### Transporter
+
+_App: `transport`_
+
+Transportation helper application allowing registered users to offer transportation, search all offers using advanced search features, reservations, ability to track real-time GPS location of the transporter and grading.
+
+**Features:**
+- _TODO_
 
 
 ## Setup
 
 **Dependencies:**
 - [Django](https://www.djangoproject.com/)
+  - `$ python -m venv venv` (virtual environment)
+  - `$ source venv/bin/activate`
+  - `$ pip install -r requirements.txt` (`$ pip freeze > requirements.txt` to update dependencies)
