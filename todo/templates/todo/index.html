@@ -1,0 +1,19 @@
+<h4><a href="/">Back</a></h4>
+
+{% if lists %}
+  <p>Todo list!</p>
+  <ul>
+  {% for list in lists %}
+    <li>{{ list.id }} - {{ list.name }}</li>
+    <ul>
+    {% for task in tasks %}
+      {% if task.list.id == list.id %}
+        <li>{{ task.id }} - {{ task.name }}</li>
+      {% endif %}
+    {% endfor %}
+    </ul>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>No todo lists are available.</p>
+{% endif %}
