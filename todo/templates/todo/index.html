@@ -1,3 +1,9 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
 <h4><a href="/">Back</a></h4>
 
 {% if lists %}
@@ -17,3 +23,5 @@
 {% else %}
   <p>No todo lists are available.</p>
 {% endif %}
+
+{% endblock content %}

@@ -8,6 +8,7 @@ def index(request):
     tasks = models.Task.objects.order_by('name')
 
     context = {
+        'title': 'To-do List',
         'lists': lists,
         'tasks': tasks,
     }

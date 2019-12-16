@@ -1,11 +1,14 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
+
 <h2>{{ title }}</h2>
 
 <ul>
-  {% for page in pages %}
-  <li><a href="{{ page.url }}">{{ page.title }}</a></li>
-  {% endfor %}
+  <li><a href="{% url 'todo:index' %}">To-do List</a></li>
+  <li><a href="{% url 'doodle:index' %}">Doodle (game)</a></li>
+  <li><a href="{% url 'ludo:index' %}">Ludo (game)</a></li>
+  <li><a href="{% url 'transport:index' %}">Transporter</a></li>
 </ul>
+
 {% endblock content %}
