@@ -6,10 +6,9 @@
 
 <h4><a href="/">Back</a></h4>
 
-{% if lists %}
-  <p>Todo list!</p>
+<p>Todo list!</p>
+{% for list in lists %}
   <ul>
-  {% for list in lists %}
     <li>{{ list.id }} - {{ list.name }}</li>
     <ul>
     {% for task in tasks %}
@@ -18,10 +17,9 @@
       {% endif %}
     {% endfor %}
     </ul>
-  {% endfor %}
   </ul>
-{% else %}
-  <p>No todo lists are available.</p>
-{% endif %}
+{% empty %}
+<p>No todo lists are available.</p>
+{% endfor %}
 
 {% endblock content %}
