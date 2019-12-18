@@ -1,7 +1,5 @@
-from django.shortcuts import render
+from django.views import generic
 
 
-def index(request):
-    return render(request, 'doodle/index.html', {
-        'title': 'Doodle (game)',
-    })
+class IndexView(generic.TemplateView):
+    template_name = 'doodle/index.html'

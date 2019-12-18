@@ -1,7 +1,5 @@
-from django.shortcuts import render
+from django.views import generic
 
 
-def index(request):
-    return render(request, 'transport/index.html', {
-        'title': 'Transporter',
-    })
+class IndexView(generic.TemplateView):
+    template_name = 'transport/index.html'

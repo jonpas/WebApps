@@ -1,15 +1,14 @@
 {% load static %}
 
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>{{ title|default:"Unknown" }}</title>
+    <title>{% block title %}Web Apps{% endblock title %}</title>
   </head>
 
   <body>
     {% block content %}
-    <p>Placeholder text in base template.</p>
     {% endblock content %}
   </body>
 </html>

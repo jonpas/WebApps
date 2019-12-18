@@ -1,7 +1,5 @@
-from django.shortcuts import render
+from django.views import generic
 
 
-def index(request):
-    return render(request, 'ludo/index.html', {
-        'title': 'Ludo (game)',
-    })
+class IndexView(generic.TemplateView):
+    template_name = 'ludo/index.html'

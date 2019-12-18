@@ -1,7 +1,5 @@
-from django.shortcuts import render
+from django.views import generic
 
 
-def index(request):
-    return render(request, 'core/index.html', {
-        'title': 'Web Apps',
-    })
+class IndexView(generic.TemplateView):
+    template_name = 'core/index.html'
