@@ -6,7 +6,7 @@ class Tag(models.Model):
     color = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.color})"
 
 
 class List(models.Model):
@@ -14,7 +14,7 @@ class List(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.tags.all()})"
 
 
 class Task(models.Model):
@@ -26,4 +26,4 @@ class Task(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.completed}, {self.deadline}, {self.reminder_before_deadline}, {self.tags.all()})"
