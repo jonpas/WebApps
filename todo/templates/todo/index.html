@@ -2,13 +2,7 @@
 
 {% block content %}
 
-<h2>To-do List</h2>
-
-<h4><a href="/">Back</a></h4>
-
-
 <a href="{% url 'todo:list-create' %}">Add List</a>
-
 {% for list in lists %}
   <ul>
     <li>{{ list.id }} - {{ list }} (<a href="{% url 'todo:task-create' %}">Add Task</a>, <a href="{% url 'todo:list-update' list.pk %}">Edit List</a>, <a href="{% url 'todo:list-delete' list.pk %}">Delete List</a>)</li>
@@ -24,9 +18,7 @@
   <p>No todo lists are available.</p>
 {% endfor %}
 
-
 <a href="{% url 'todo:tag-create' %}">Add Tag</a>
-
 {% for tag in tags %}
   <ul>
     <li>{{ tag.id }} - {{ tag }} (<a href="{% url 'todo:tag-update' tag.id %}">Edit Tag</a>, <a href="{% url 'todo:tag-delete' tag.id %}">Delete Tag</a>)</li>

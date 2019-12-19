@@ -4,11 +4,10 @@
 
 <h2>{{ title }}</h2>
 
-<h4><a href="{% url 'todo:index' %}">Back</a></h4>
-
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
+  <a href="{% url 'todo:index' %}"><button type="button">Cancel</button></a>
   <button type="submit">Save</button>
 </form>
 
