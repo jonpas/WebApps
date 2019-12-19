@@ -6,23 +6,33 @@
 
 <h4><a href="/">Back</a></h4>
 
-<p>Todo list!</p>
 
-<a href="">Add List</a>
+<a href="{% url 'todo:list-create' %}">Add List</a>
 
 {% for list in lists %}
   <ul>
-    <li>{{ list.id }} - {{ list }} (<a href="">Add Task</a>, <a href="">Edit Tag(s)</a>, <a href="">Edit List</a>, <a href="">Delete List</a>)</li>
+    <li>{{ list.id }} - {{ list }} (<a href="{% url 'todo:task-create' %}">Add Task</a>, <a href="{% url 'todo:list-update' list.pk %}">Edit List</a>, <a href="{% url 'todo:list-delete' list.pk %}">Delete List</a>)</li>
     <ul>
     {% for task in tasks %}
       {% if task.list.id == list.id %}
-        <li>{{ task.id }} - {{ task }} (<a href="">Edit Tag(s)</a>, <a href="">Edit Task</a>, <a href="">Delete Task</a>)</li>
+      <li>{{ task.id }} - {{ task }} (<a href="{% url 'todo:task-update' task.id %}">Edit Task</a>, <a href="{% url 'todo:task-delete' task.id %}">Delete Task</a>)</li>
       {% endif %}
     {% endfor %}
     </ul>
   </ul>
 {% empty %}
-<p>No todo lists are available.</p>
+  <p>No todo lists are available.</p>
+{% endfor %}
+
+
+<a href="{% url 'todo:tag-create' %}">Add Tag</a>
+
+{% for tag in tags %}
+  <ul>
+    <li>{{ tag.id }} - {{ tag }} (<a href="{% url 'todo:tag-update' tag.id %}">Edit Tag</a>, <a href="{% url 'todo:tag-delete' tag.id %}">Delete Tag</a>)</li>
+  </ul>
+{% empty %}
+  <p>No tags are available.</p>
 {% endfor %}
 
 {% endblock content %}

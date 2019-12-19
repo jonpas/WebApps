@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<h4><a href="{% url 'todo:index' %}">Back</a></h4>
+
+<form method="post">
+  {% csrf_token %}
+  <p>Are you sure you want to delete "{{ object }}"?</p>
+  <button type="submit">Confirm</button>
+</form>
+
+{% endblock content %}
