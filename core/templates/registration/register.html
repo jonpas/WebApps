@@ -2,12 +2,12 @@
 
 {% block content %}
 
-<h2>Register</h2>
+<h2>{% block title %}Register{% endblock title %}</h2>
 
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Register</button>
+  <button type="submit" class="btn btn-primary">Register</button>
 </form>
 
 {% endblock content %}

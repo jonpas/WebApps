@@ -2,13 +2,15 @@
 
 {% block content %}
 
-<h2>{{ title }}</h2>
+<h2>{% block title %}{{ title }}{% endblock title %}</h2>
 
 <form method="post">
   {% csrf_token %}
   <p>Are you sure you want to delete "{{ object }}"?</p>
-  <a href="{% url 'todo:index' %}"><button type="button">Cancel</button></a>
-  <button type="submit">Confirm</button>
+  <a href="{% url 'todo:index' %}">
+    <button type="button" class="btn btn-primary">Cancel</button>
+  </a>
+  <button type="submit" class="btn btn-primary">Confirm</button>
 </form>
 
 {% endblock content %}

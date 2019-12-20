@@ -91,6 +91,11 @@ class TaskCreateView(generic.CreateView):
     fields = '__all__'
     success_url = reverse_lazy('todo:index')
 
+    def get_initial(self, **kwargs):
+        initial = super().get_initial(**kwargs)
+        initial['list'] = self.kwargs['list']
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'New Task'

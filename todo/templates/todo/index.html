@@ -2,29 +2,75 @@
 
 {% block content %}
 
-<a href="{% url 'todo:list-create' %}">Add List</a>
-{% for list in lists %}
-  <ul>
-    <li>{{ list.id }} - {{ list }} (<a href="{% url 'todo:task-create' %}">Add Task</a>, <a href="{% url 'todo:list-update' list.pk %}">Edit List</a>, <a href="{% url 'todo:list-delete' list.pk %}">Delete List</a>)</li>
-    <ul>
-    {% for task in tasks %}
-      {% if task.list.id == list.id %}
-      <li>{{ task.id }} - {{ task }} (<a href="{% url 'todo:task-update' task.id %}">Edit Task</a>, <a href="{% url 'todo:task-delete' task.id %}">Delete Task</a>)</li>
-      {% endif %}
-    {% endfor %}
-    </ul>
-  </ul>
-{% empty %}
-  <p>No todo lists are available.</p>
-{% endfor %}
+<h2>{% block title %}Todo{% endblock title %}</h2>
 
-<a href="{% url 'todo:tag-create' %}">Add Tag</a>
-{% for tag in tags %}
-  <ul>
-    <li>{{ tag.id }} - {{ tag }} (<a href="{% url 'todo:tag-update' tag.id %}">Edit Tag</a>, <a href="{% url 'todo:tag-delete' tag.id %}">Delete Tag</a>)</li>
+<div class="row">
+  <div class="col text-right">
+    <a href="{% url 'todo:list-create' %}">
+      <button type="button" class="btn btn-info">
+        <span class="badge badge-success badge-pill mr-1"><i class="fa fa-plus"></i></span>
+        List
+      </button>
+    </a>
+
+    <a href="{% url 'todo:tag-create' %}">
+      <button type="button" class="btn btn-primary">
+        <span class="badge badge-success badge-pill mr-1"><i class="fa fa-plus"></i></span>
+        Tag
+      </button>
+    </a>
+  </div>
+</div>
+
+<ul class="list-group">
+  {% for list in lists %}
+  <li class="list-group-item d-flex justify-content-between align-items-center border border-info rounded-0 bg-primary mt-2">
+    <div class="text-left">
+      <a href="#" class="btn p-0 {% if not list.task_set.all %}disabled{% endif %}" data-toggle="collapse" data-target="#list-{{ list.id }}">
+        <i class="fa fa-caret-down mr-2"></i>
+        <span class="badge badge-secondary badge-pill mr-2">{{ list.task_set.count }}</span>
+        {{ list.name }}
+      </a>
+
+      {% for tag in list.tags.all %}
+      <span class="badge" style="background-color:{{ tag.color }}"> <!-- TODO Dropdown colours (with text color predefined) -->
+        <a href="{% url 'todo:tag-update' tag.pk %}" class="text-white">
+          {{ tag.name }}
+        </a>
+        <a href="{% url 'todo:tag-delete' tag.pk %}" class="text-white">
+          <i class="fa fa-times"></i>
+        </a>
+      </span>
+      {% endfor %}
+    </div>
+    <div class="text-right">
+      <a class="badge badge-success badge-pill mr-3" href="{% url 'todo:task-create' list.pk %}"><i class="fa fa-plus"></i>
+        <span class="d-none d-sm-inline">Task</span>
+      </a>
+      <a class="badge badge-info badge-pill" href="{% url 'todo:list-update' list.pk %}"><i class="fa fa-wrench"></i></a>
+      <a class="badge badge-warning badge-pill" href="{% url 'todo:list-delete' list.pk %}"><i class="fa fa-minus"></i></a>
+    </div>
+  </li>
+
+  <ul class="list-group mx-2 collapse" id="list-{{ list.id }}">
+    {% for task in list.task_set.all %}
+    <li class="list-group-item d-flex justify-content-between align-items-center border-0 rounded-0 bg-primary mt-1">
+      <div class="text-left">
+        <span class="badge badge-{% if task.completed %}secondary{% else %}success{% endif %} mr-2">
+          <i class="fa fa-check"></i> <!-- TODO Form Update -->
+        </span>
+        {{ task.name }}
+      </div>
+      <div class="text-right">
+        <a class="badge badge-info badge-pill" href="{% url 'todo:task-update' task.pk %}"><i class="fa fa-wrench"></i></a>
+        <a class="badge badge-warning badge-pill" href="{% url 'todo:task-delete' task.pk %}"><i class="fa fa-minus"></i></a>
+      </div>
+    </li>
+    {% endfor %}
   </ul>
-{% empty %}
-  <p>No tags are available.</p>
-{% endfor %}
+  {% empty %}
+  <p>No lists available!</p>
+  {% endfor %}
+</ul>
 
 {% endblock content %}

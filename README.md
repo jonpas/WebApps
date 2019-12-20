@@ -5,16 +5,16 @@ Various web applications built at Web Technologies (slo. Spletne Tehnologije) us
 
 ## Applications
 
-### To-do List
+### Todo
 
 _App: `todo`_
 
-To-do lists application featuring lists and items with deadlines and tags.
+Todo lists application featuring lists and items with deadlines and tags.
 
 **Features:**
-- To-do Lists Manipulation
-- To-do Item Manipulation
-- To-do Item Status
+- Todo Lists Manipulation
+- Todo Item Manipulation
+- Todo Item Status
 - Deadlines
   - Time before deadline Notifications
 - Tags

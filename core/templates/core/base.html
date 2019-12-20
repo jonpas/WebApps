@@ -6,33 +6,38 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Bootstrap CSS (Bootswatch Darkly) -->
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css">
+    <!-- Fontawesome -->
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>{% block title %}Web Apps{% endblock title %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'core/style.css' %}">
+
+    <title>WebApps - {% block title %}App{% endblock title %}</title>
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'core:index' %}">Web Apps</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary p-2">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'core:index' %}">WebApps</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item {% if request.path == '/' %}active{% endif %}">
-            <a class="nav-link" href="{% url 'core:index' %}">Home <span class="sr-only">(current)</span></a>
-          </li>
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% if request.path == '/' %}active{% endif %}">
+              <a class="nav-link" href="{% url 'core:index' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
 
-          <li class="nav-item {% if '/todo/' in request.path %}active{% endif %}">
-            <a class="nav-link" href="{% url 'todo:index' %}">Todo</a>
-          </li>
+            <li class="nav-item {% if '/todo/' in request.path %}active{% endif %}">
+              <a class="nav-link" href="{% url 'todo:index' %}">Todo</a>
+            </li>
 
-          {% url 'core:logout' as logout_url %}
-          {% url 'core:login' as login_url %}
-          {% url 'core:register' as register_url %}
-          {% if user.is_authenticated %}
+            {% url 'core:logout' as logout_url %}
+            {% url 'core:login' as login_url %}
+            {% url 'core:register' as register_url %}
+            {% if user.is_authenticated %}
             <li class="nav-item {% if '/doodle/' in request.path %}active{% endif %}">
               <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{% url 'doodle:index' %}">Doodle</a>
             </li>
@@ -42,28 +47,31 @@
             <li class="nav-item {% if '/transport/' in request.path %}active{% endif %}">
               <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{% url 'transport:index' %}">Transporter</a>
             </li>
-          {% endif %}
-        </ul>
+            {% endif %}
+          </ul>
 
-        <ul class="navbar-nav">
-          {% if user.is_authenticated %}
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
             <li class="nav-item {% if logout_url in request.path %}active{% endif %}">
               <a class="nav-link" href="{{ logout_url }}">Logout</a>
             </li>
-          {% else %}
+            {% else %}
             <li class="nav-item {% if login_url in request.path %}active{% endif %}">
               <a class="nav-link" href="{{ login_url }}">Login</a>
             </li>
             <li class="nav-item {% if register_url in request.path %}active{% endif %}">
               <a class="nav-link" href="{{ register_url }}">Register</a>
             </li>
-          {% endif %}
-        </ul>
+            {% endif %}
+          </ul>
+        </div>
       </div>
     </nav>
 
-    {% block content %}
-    {% endblock content %}
+    <div class="container">
+      {% block content %}
+      {% endblock content %}
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
