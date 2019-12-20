@@ -2,6 +2,7 @@ from django.views import generic
 from django.urls import reverse_lazy
 
 from . import models
+from . import forms
 
 
 class IndexView(generic.TemplateView):
@@ -87,8 +88,9 @@ class ListDeleteView(generic.DeleteView):
 
 class TaskCreateView(generic.CreateView):
     template_name = 'todo/create.html'
-    model = models.Task
-    fields = '__all__'
+    form_class = forms.TaskCreateForm
+    #model = models.Task
+    #fields = '__all__'
     success_url = reverse_lazy('todo:index')
 
     def get_initial(self, **kwargs):

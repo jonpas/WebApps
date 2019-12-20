@@ -36,3 +36,9 @@ class Task(models.Model):
 
     def __repr__(self):
         return f"{self.name} ({self.completed}, {self.deadline}, {self.reminder_before_deadline}, {self.tags.all()})"
+
+    def time_to_deadline(self):
+        return self.reminder_before_deadline
+
+    def remind(self):
+        return not self.completed and self.reminder_before_deadline is not None

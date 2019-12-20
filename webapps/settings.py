@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'core.apps.CoreConfig',
     'todo.apps.TodoConfig',
     'doodle.apps.DoodleConfig',
@@ -129,3 +130,5 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'core:index'
 LOGOUT_REDIRECT_URL = 'core:index'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
