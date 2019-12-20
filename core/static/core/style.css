@@ -1,3 +1,11 @@
 h2 {
     margin: 15px 0px 15px 0px;
 }
+
+/* Collapse open/close show/hide element */
+a[aria-expanded=true] .collapse-closed {
+    display: none;
+}
+a[aria-expanded=false] .collapse-open {
+    display: none;
+}

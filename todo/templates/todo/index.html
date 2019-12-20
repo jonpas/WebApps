@@ -2,17 +2,17 @@
 
 {% block content %}
 
-<h2>{% block title %}Todo{% endblock title %}</h2>
-
 <div class="row">
-  <div class="col text-right">
+  <div class="col">
+    <h2>{% block title %}Todo{% endblock title %}</h2>
+  </div>
+  <div class="col text-right mt-auto">
     <a href="{% url 'todo:list-create' %}">
       <button type="button" class="btn btn-info">
         <span class="badge badge-success badge-pill mr-1"><i class="fa fa-plus"></i></span>
         List
       </button>
     </a>
-
     <a href="{% url 'todo:tag-create' %}">
       <button type="button" class="btn btn-primary">
         <span class="badge badge-success badge-pill mr-1"><i class="fa fa-plus"></i></span>
@@ -26,8 +26,9 @@
   {% for list in lists %}
   <li class="list-group-item d-flex justify-content-between align-items-center border border-info rounded-0 bg-primary mt-2">
     <div class="text-left">
-      <a href="#" class="btn p-0 {% if not list.task_set.all %}disabled{% endif %}" data-toggle="collapse" data-target="#list-{{ list.id }}">
-        <i class="fa fa-caret-down mr-2"></i>
+      <a href="#" class="btn p-0 {% if not list.task_set.all %}disabled{% endif %}" data-toggle="collapse" data-target="#list-{{ list.id }}" aria-expanded="false" aria-controls="list-{{ list.id }}">
+        <i class="fa fa-chevron-down collapse-open mr-2"></i>
+        <i class="fa fa-chevron-right collapse-closed mr-2"></i>
         <span class="badge badge-secondary badge-pill mr-2">{{ list.task_set.count }}</span>
         {{ list.name }}
       </a>
@@ -56,8 +57,11 @@
     {% for task in list.task_set.all %}
     <li class="list-group-item d-flex justify-content-between align-items-center border-0 rounded-0 bg-primary mt-1">
       <div class="text-left">
-        <span class="badge badge-{% if task.completed %}secondary{% else %}success{% endif %} mr-2">
-          <i class="fa fa-check"></i> <!-- TODO Form Update -->
+        <span class="form-check float-left mr-2">
+          <form method="post" action="">
+            {% csrf_token %}
+            <input class="form-check-input position-static" type="checkbox" {% if task.completed %}checked{% endif %}>
+          </form>
         </span>
         {{ task.name }}
       </div>
