@@ -1,9 +1,24 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
 
-<h2>{% block title %}Home{% endblock title %}</h2>
+<div class="row mt-3">
+  <div class="col text-center">
+    <h1>WebApps</h1>
+  </div>
+</div>
 
-<p>Something here ...</p>
+<div class="row my-4">
+  <div class="col-6 offset-3 text-center">
+    <h4>Various web applications built at Web Technologies using <a href="https://www.djangoproject.com/">Django</a> and <a href="https://getbootstrap.com/">Bootstrap</a>, showcasing different systems and technologies in 4 distinct applications.</h4>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col text-center">
+    <img src="{% static 'core/logo-um-feri-ang.png' %}" alt="UM FERI" height="156">
+  </div>
+</div>
 
 {% endblock content %}

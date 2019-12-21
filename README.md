@@ -1,6 +1,6 @@
 # FERI-WebApps
 
-Various web applications built at Web Technologies (slo. Spletne Tehnologije) using [Django](https://www.djangoproject.com/) and [Bootstrap](https://getbootstrap.com/).
+Various web applications built at Web Technologies (slo. Spletne Tehnologije) using [Django](https://www.djangoproject.com/) and [Bootstrap](https://getbootstrap.com/), showcasing different systems and technologies in 4 distinct applications.
 
 
 ## Applications
