@@ -1,14 +1,13 @@
 {% extends 'core/base.html' %}
-
 {% load crispy_forms_tags %}
 
 {% block content %}
 
-<h2>{% block title %}{{ title }}{% endblock title %}</h2
+<h2>{% block title %}{{ title }}{% endblock title %}</h2>
 
 <form method="post">
   {% csrf_token %}
-  {% crispy form %}
+  {{ form|crispy }}
   <a href="{% url 'todo:index' %}">
     <button type="button" class="btn btn-primary">Cancel</button>
   </a>

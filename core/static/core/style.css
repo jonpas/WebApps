@@ -6,6 +6,12 @@ h1, h2 {
     font-size: 85%;
 }
 
+@media (min-width: 768px) {
+    .form-control {
+        width: unset;
+    }
+}
+
 /* Collapse open/close show/hide element (caret) */
 a[aria-expanded=true] .collapse-closed {
     display: none;
