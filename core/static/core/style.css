@@ -2,7 +2,11 @@ h2 {
     margin: 15px 0px 15px 0px;
 }
 
-/* Collapse open/close show/hide element */
+.badge {
+    font-size: 85%;
+}
+
+/* Collapse open/close show/hide element (caret) */
 a[aria-expanded=true] .collapse-closed {
     display: none;
 }

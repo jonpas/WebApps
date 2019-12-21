@@ -131,4 +131,7 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'core:index'
 LOGOUT_REDIRECT_URL = 'core:index'
 
+
+# Forms (crispy)
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
