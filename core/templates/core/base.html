@@ -1,5 +1,15 @@
 {% load static %}
 
+{% url 'core:index' as home_url %}
+{% url 'todo:index' as todo_url %}
+{% url 'doodle:index' as doodle_url %}
+{% url 'ludo:index' as ludo_url %}
+{% url 'transport:index' as transport_url %}
+{% url 'admin:index' as admin_url %}
+{% url 'core:logout' as logout_url %}
+{% url 'core:login' as login_url %}
+{% url 'core:register' as register_url %}
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -19,39 +29,41 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary p-2">
       <div class="container">
-        <a class="navbar-brand" href="{% url 'core:index' %}">WebApps</a>
+        <a class="navbar-brand" href="{{ home_url }}">WebApps</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item {% if request.path == '/' %}active{% endif %}">
-              <a class="nav-link" href="{% url 'core:index' %}">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item {% if home_url == request.path %}active{% endif %}">
+              <a class="nav-link" href="{{ home_url }}">Home <span class="sr-only">(current)</span></a>
             </li>
 
-            <li class="nav-item {% if '/todo/' in request.path %}active{% endif %}">
-              <a class="nav-link" href="{% url 'todo:index' %}">Todo</a>
+            <li class="nav-item {% if todo_url in request.path %}active{% endif %}">
+              <a class="nav-link" href="{{ todo_url }}">Todo</a>
             </li>
 
-            {% url 'core:logout' as logout_url %}
-            {% url 'core:login' as login_url %}
-            {% url 'core:register' as register_url %}
             {% if user.is_authenticated %}
-            <li class="nav-item {% if '/doodle/' in request.path %}active{% endif %}">
-              <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{% url 'doodle:index' %}">Doodle</a>
+            <li class="nav-item {% if doodle_url in request.path %}active{% endif %}">
+              <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{{ doodle_url }}">Doodle</a>
             </li>
-            <li class="nav-item {% if '/ludo/' in request.path %}active{% endif %}">
-              <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{% url 'ludo:index' %}">Ludo</a>
+            <li class="nav-item {% if ludo_url in request.path %}active{% endif %}">
+              <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{{ ludo_url }}">Ludo</a>
             </li>
-            <li class="nav-item {% if '/transport/' in request.path %}active{% endif %}">
-              <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{% url 'transport:index' %}">Transporter</a>
+            <li class="nav-item {% if transport_url in request.path %}active{% endif %}">
+              <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{{ transport_url }}">Transporter</a>
             </li>
             {% endif %}
           </ul>
 
           <ul class="navbar-nav">
             {% if user.is_authenticated %}
+            {% if user.is_staff %}
+            <li class="nav-item {% if admin_url in request.path %}active{% endif %}">
+              <a class="nav-link" href="{{ admin_url }}">Administration</a>
+            </li>
+            {% endif %}
             <li class="nav-item {% if logout_url in request.path %}active{% endif %}">
               <a class="nav-link" href="{{ logout_url }}">Logout</a>
             </li>
