@@ -6,6 +6,36 @@ h1, h2 {
     font-size: 85%;
 }
 
+.btn-success {
+    background-color: #009966;
+    border-color: #009966;
+}
+.btn-success:hover {
+    background-color: #006d51;
+    border-color: #006d51;
+}
+.btn-info {
+    background-color: #2384c5;
+    border-color: #2384c5;
+}
+.btn-info:hover {
+    background-color: #1a6393;
+    border-color: #1a6393;
+}
+
+.badge-success {
+    background-color: #009966;
+}
+a.badge-success:hover {
+    background-color: #006d51;
+}
+.badge-info {
+    background-color: #2384c5;
+}
+a.badge-info:hover {
+    background-color: #1a6393;
+}
+
 @media (min-width: 768px) {
     .form-control {
         width: unset;
