@@ -114,6 +114,12 @@ class TaskUpdateView(generic.UpdateView):
         return context
 
 
+class TaskCompleteUpdateView(generic.UpdateView):
+    model = models.Task
+    fields = ['completed']
+    success_url = reverse_lazy('todo:index')
+
+
 class TaskDeleteView(generic.DeleteView):
     template_name = 'todo/delete.html'
     model = models.Task

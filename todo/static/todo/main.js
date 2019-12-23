@@ -2,8 +2,14 @@
 $('[id*="task-"]').change(function() {
     var task = $(this).closest('li');
     var reminder = $('#remind-' + this.id);
+    var id = this.id.substring(this.id.indexOf('-') + 1, this.id.length);
 
-    // TODO Update database
+    // Update database
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('POST', 'tasks/' + id + '/complete/', true);
+    xhttp.setRequestHeader('X-CSRFToken', Cookies.get('csrftoken'));
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send('completed=' + this.checked);
 
     // Update style
     if (this.checked) {

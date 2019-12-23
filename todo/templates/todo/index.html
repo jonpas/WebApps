@@ -58,12 +58,6 @@
     {% for task in list.task_set.all %}
     <li class="list-group-item d-flex justify-content-between align-items-center border-top rounded-0 mt-1 bg-primary {% if task.remind %}border border-danger{% elif task.completed %}border border-success font-italic{% else %}border-0{% endif %}">
       <div class="col text-left pl-0">
-        <!--<span class="form-check float-left mr-2">
-          <form method="post" action="">
-            {% csrf_token %}
-            <input class="form-check-input position-static" type="checkbox" {% if task.completed %}checked{% endif %}>
-          </form>
-        </span>-->
         <span class="mr-2">
           <div class="custom-control custom-checkbox float-left">
             <input type="checkbox" class="custom-control-input" id="task-{{ task.id }}" autocomplete="off" {% if task.completed %}checked=""{% endif %}>
@@ -84,8 +78,8 @@
       </div>
       <div class="col text-center">
         {{ task.deadline|date:"j. b Y (G:i)" }}
-        {% if task.remind %}
-        <span class="badge badge-danger ml-1" id="remind-task-{{ task.id }}">
+        {% if task.reminder_before_deadline %}
+        <span class="badge badge-danger ml-1 {% if not task.remind %}d-none{% endif %}" id="remind-task-{{ task.id }}">
           <i class="fa fa-warning"></i> ({{ task.time_to_deadline }} left)
         </span>
         {% endif %}
