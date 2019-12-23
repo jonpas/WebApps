@@ -141,6 +141,7 @@ FLATPICKR_SETTINGS = {
     'theme_name': 'dark',
     'options': {
         'dateFormat': 'Y-m-d H:i:S',
+        'position': "below",
         'time_24hr': True,
     },
 }

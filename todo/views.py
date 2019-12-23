@@ -88,7 +88,7 @@ class ListDeleteView(generic.DeleteView):
 
 class TaskCreateView(generic.CreateView):
     template_name = 'todo/create.html'
-    form_class = forms.TaskCreateForm
+    form_class = forms.TaskForm
     success_url = reverse_lazy('todo:index')
 
     def get_initial(self, **kwargs):
@@ -104,8 +104,8 @@ class TaskCreateView(generic.CreateView):
 
 class TaskUpdateView(generic.UpdateView):
     template_name = 'todo/update.html'
+    form_class = forms.TaskForm
     model = models.Task
-    fields = '__all__'
     success_url = reverse_lazy('todo:index')
 
     def get_context_data(self, **kwargs):

@@ -5,7 +5,7 @@ from flatpickr import DateTimePickerInput
 from . import models
 
 
-class TaskCreateForm(forms.ModelForm):
+class TaskForm(forms.ModelForm):
     class Meta:
         model = models.Task
         exclude = ['completed']
