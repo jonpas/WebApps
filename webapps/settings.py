@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'flatpickr',
     'core.apps.CoreConfig',
     'todo.apps.TodoConfig',
     'doodle.apps.DoodleConfig',
@@ -132,6 +133,14 @@ LOGIN_REDIRECT_URL = 'core:index'
 LOGOUT_REDIRECT_URL = 'core:index'
 
 
-# Forms (crispy)
+# Forms
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+FLATPICKR_SETTINGS = {
+    'theme_name': 'dark',
+    'options': {
+        'dateFormat': 'Y-m-d H:i:S',
+        'time_24hr': True,
+    },
+}
