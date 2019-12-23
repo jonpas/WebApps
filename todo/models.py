@@ -1,5 +1,7 @@
 from django.db import models
 
+import datetime
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=20)
@@ -28,7 +30,8 @@ class Task(models.Model):
     name = models.CharField(max_length=60)
     completed = models.BooleanField(default=False)
     deadline = models.DateTimeField(null=True, blank=True)
-    reminder_before_deadline = models.DurationField(null=True, blank=True)
+    reminder_days = models.IntegerField(default='0')
+    reminder_hours = models.IntegerField(default='0')
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
@@ -37,8 +40,11 @@ class Task(models.Model):
     def __repr__(self):
         return f"{self.name} ({self.completed}, {self.deadline}, {self.reminder_before_deadline}, {self.tags.all()})"
 
-    def time_to_deadline(self):
-        return self.reminder_before_deadline
+    def reminder(self):
+        time_to_deadline = self.deadline - datetime.datetime.now(datetime.timezone.utc)
+        time_to_deadline = max(0, time_to_deadline.days * 24 + time_to_deadline.seconds // 3600)
+        reminder_time = max(0, self.reminder_days) * 24 + max(0, self.reminder_hours)
+        return time_to_deadline < reminder_time
 
     def remind(self):
-        return not self.completed and self.reminder_before_deadline is not None
+        return not self.completed and self.reminder()
