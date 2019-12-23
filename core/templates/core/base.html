@@ -49,13 +49,13 @@
 
             {% if user.is_authenticated %}
             <li class="nav-item {% if doodle_url in request.path %}active{% endif %}">
-              <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{{ doodle_url }}">Doodle</a>
+              <a class="nav-link" href="{{ doodle_url }}">Doodle</a>
             </li>
             <li class="nav-item {% if ludo_url in request.path %}active{% endif %}">
-              <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{{ ludo_url }}">Ludo</a>
+              <a class="nav-link disabled" href="{{ ludo_url }}">Ludo</a>
             </li>
             <li class="nav-item {% if transport_url in request.path %}active{% endif %}">
-              <a class="nav-link disabled" tabindex="-1" aria-disabled="true" href="{{ transport_url }}">Transporter</a>
+              <a class="nav-link disabled" href="{{ transport_url }}">Transporter</a>
             </li>
             {% endif %}
           </ul>
