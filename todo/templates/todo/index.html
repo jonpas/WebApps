@@ -76,7 +76,7 @@
         {% endfor %}
       </div>
       <div class="col text-center">
-        {{ task.deadline }}
+        {{ task.deadline|date:"j. b Y (G:i)" }}
         {% if task.remind %}
         <span class="badge badge-danger ml-1">
           <i class="fa fa-warning"></i> ({{ task.time_to_deadline }} left)
