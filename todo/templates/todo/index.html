@@ -35,7 +35,7 @@
 
       {% for tag in list.tags.all %}
       <span class="badge" style="background-color:{{ tag.color }}">
-        <a href="{% url 'todo:tag-update' tag.pk %}" class="text-white">
+        <a href="{% url 'todo:tag-update' tag.pk %}" class="visible-color">
           {{ tag.name }}
         </a>
         <a href="{% url 'todo:tag-delete' tag.pk %}">
@@ -66,7 +66,7 @@
         <span class="pr-2">{{ task.name }}</span>
         {% for tag in task.tags.all %}
         <span class="badge" style="background-color:{{ tag.color }}">
-          <a href="{% url 'todo:tag-update' tag.pk %}" class="text-white">
+          <a href="{% url 'todo:tag-update' tag.pk %}" class="visible-color">
             {{ tag.name }}
           </a>
           <a href="{% url 'todo:tag-delete' tag.pk %}">
