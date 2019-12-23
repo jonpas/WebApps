@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -55,15 +56,21 @@
 
   <ul class="list-group mx-2 collapse" id="list-{{ list.id }}">
     {% for task in list.task_set.all %}
-    <li class="list-group-item d-flex justify-content-between align-items-center rounded-0 mt-1 bg-primary {% if task.remind %}border-1 border-danger{% else %}border-0{% endif %}">
+    <li class="list-group-item d-flex justify-content-between align-items-center border-top rounded-0 mt-1 bg-primary {% if task.remind %}border border-danger{% elif task.completed %}border border-success font-italic{% else %}border-0{% endif %}">
       <div class="col text-left pl-0">
-        <span class="form-check float-left mr-2">
+        <!--<span class="form-check float-left mr-2">
           <form method="post" action="">
             {% csrf_token %}
             <input class="form-check-input position-static" type="checkbox" {% if task.completed %}checked{% endif %}>
           </form>
+        </span>-->
+        <span class="mr-2">
+          <div class="custom-control custom-checkbox float-left">
+            <input type="checkbox" class="custom-control-input" id="task-{{ task.id }}" autocomplete="off" {% if task.completed %}checked=""{% endif %}>
+            <label class="custom-control-label" for="task-{{ task.id }}">{{ task.name }}</label>
+          </div>
         </span>
-        <span class="pr-2">{{ task.name }}</span>
+
         {% for tag in task.tags.all %}
         <span class="badge" style="background-color:{{ tag.color }}">
           <a href="{% url 'todo:tag-update' tag.pk %}" class="visible-color">
@@ -78,7 +85,7 @@
       <div class="col text-center">
         {{ task.deadline|date:"j. b Y (G:i)" }}
         {% if task.remind %}
-        <span class="badge badge-danger ml-1">
+        <span class="badge badge-danger ml-1" id="remind-task-{{ task.id }}">
           <i class="fa fa-warning"></i> ({{ task.time_to_deadline }} left)
         </span>
         {% endif %}
@@ -96,3 +103,7 @@
 </ul>
 
 {% endblock content %}
+
+{% block js %}
+<script src="{% static 'todo/main.js' %}"></script>
+{% endblock js %}
