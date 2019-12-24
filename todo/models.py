@@ -1,6 +1,5 @@
 from django.db import models
-
-import datetime
+from django.utils import timezone
 
 
 class Tag(models.Model):
@@ -41,7 +40,7 @@ class Task(models.Model):
         return f"{self.name} ({self.completed}, {self.deadline}, {self.reminder_before_deadline}, {self.tags.all()})"
 
     def reminder(self):
-        time_to_deadline = self.deadline - datetime.datetime.now(datetime.timezone.utc)
+        time_to_deadline = self.deadline - timezone.now()
         time_to_deadline = max(0, time_to_deadline.days * 24 + time_to_deadline.seconds // 3600)
         reminder_time = max(0, self.reminder_days) * 24 + max(0, self.reminder_hours)
         return time_to_deadline < reminder_time
