@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'flatpickr',
     'core.apps.CoreConfig',
     'todo.apps.TodoConfig',
+    'rooms.apps.RoomsConfig',
     'doodle.apps.DoodleConfig',
     'ludo.apps.LudoConfig',
     'transport.apps.TransportConfig',

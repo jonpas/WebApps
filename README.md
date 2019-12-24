@@ -7,53 +7,47 @@ Various web applications built at Web Technologies (slo. Spletne Tehnologije) us
 
 ### Todo
 
-_App: `todo`_
+_`todo` (requires: `core`)_
 
-Todo lists application featuring lists and items with deadlines and tags.
-
-**Features:**
-- Todo Lists Manipulation
-- Todo Item Manipulation
-- Todo Item Status
-- Deadlines
-  - Time before deadline Notifications
-- Tags
-
-**Limitations:**
-- Single User
+Todo application featuring lists and items with deadlines and reminders, tags and dynamic completion status.
 
 ### Doodle (game)
 
-_App: `doodle`_
+_`doodle` (requires: `core`, `rooms`, login)_
 
-Doodle application featuring draw and guess chat-based multiplayer game with lobbies, login and statistics tracking.
-
-**Features:**
-- _TODO_
+Drawing game application featuring draw and guess chat-based multiplayer game with lobbies, login and statistics tracking, animations and sound effects.
 
 ### Ludo (game)
 
-_App: `ludo`_
+_`ludo` (requires: `core`, `rooms`, login)_
 
-Ludo turn-based game application featuring interactive multiplayer game with lobbies, login and statistics tracking.
-
-**Features:**
-- _TODO_
+Turn-based game application featuring interactive multiplayer board game [ludo](https://en.wikipedia.org/wiki/Ludo_(board_game)) with lobbies, login, statistics tracking, animations and sound effects.
 
 ### Transporter
 
-_App: `transport`_
+_`transport` (requires: `core`, login)_
 
 Transportation helper application allowing registered users to offer transportation, search all offers using advanced search features, reservations, ability to track real-time GPS location of the transporter and grading.
 
-**Features:**
-- _TODO_
+
+## Helper Applications
+
+### Core
+
+_`core`_
+
+Core systems application, providing login and registration services, base template with navigation bar, font page and linking all pages together.
+
+### Rooms
+
+_`rooms` (requires: `core`)_
+
+Abstracted application used by `doodle` and `ludo`, providing room creation and joining services as well as live chat (messaging).
 
 
 ## Setup
 
-**Dependencies:**
-- [Django](https://www.djangoproject.com/)
-  - `$ python -m venv venv` (virtual environment)
-  - `$ source venv/bin/activate`
-  - `$ pip install -r requirements.txt` (`$ pip freeze > requirements.txt` to update dependencies)
+- `$ python -m venv venv` (virtual environment)
+- `$ source venv/bin/activate`
+- `$ pip install -r requirements.txt` (`$ pip freeze > requirements.txt` to update dependencies)
+    - _Installs [Django](https://www.djangoproject.com/) and additional packages._
