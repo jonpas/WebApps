@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'crispy_forms',
     'flatpickr',
     'core.apps.CoreConfig',
@@ -146,3 +147,8 @@ FLATPICKR_SETTINGS = {
         'time_24hr': True,
     },
 }
+
+
+# Channels
+
+ASGI_APPLICATION = "webapps.routing.application"
