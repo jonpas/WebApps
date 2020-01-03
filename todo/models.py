@@ -41,6 +41,9 @@ class Task(models.Model):
                 {self.tags.all()})"
 
     def reminder(self):
+        if not self.deadline:
+            return False
+
         time_to_deadline = self.deadline - timezone.now()
         time_to_deadline = max(0, time_to_deadline.days * 24 + time_to_deadline.seconds // 3600)
         reminder_time = max(0, self.reminder_days) * 24 + max(0, self.reminder_hours)
