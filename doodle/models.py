@@ -2,9 +2,6 @@ from django.db import models
 
 
 class Room(models.Model):
-    class Meta:
-        managed = False
-
     name = models.CharField(max_length=20)
 
     def __str__(self):

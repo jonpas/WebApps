@@ -1,4 +1,13 @@
-What chat room ({{ type }}) would you like to enter?<br/>
-
-<input id="room-name-input" type="text"/><br/>
-<input id="room-name-submit" type="button" value="Enter"/>
+{% for room in object_list %}
+<ul>
+  <li>
+    <a href="{% url 'doodle:room' room.id %}">{{ room.name }}</a>
+  </li>
+</ul>
+{% empty %}
+<div class="row mt-5">
+  <div class="col">
+    <h4>No rooms available. Create one!</h4>
+  </div>
+</div>
+{% endfor %}

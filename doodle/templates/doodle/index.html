@@ -8,7 +8,7 @@
     <h2>{% block title %}Doodle{% endblock title %}</h2>
   </div>
   <div class="col-8 text-right mt-auto">
-    <a href="">
+    <a href="{% url 'doodle:room-create' %}">
       <button type="button" class="btn btn-primary">
         <span class="badge badge-success badge-pill mr-1"><i class="fa fa-plus"></i></span>
         Room
@@ -17,17 +17,10 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col">
-    <p>Room list</p>
-  </div>
-</div>
-
-{% include 'room/index.html' with type="doodle" %}
+{% include 'room/index.html' %}
 
 {% endblock content %}
 
 {% block js %}
-<script src="{% static 'room/main.js' %}"></script>
 <script src="{% static 'doodle/game.js' %}"></script>
 {% endblock js %}
