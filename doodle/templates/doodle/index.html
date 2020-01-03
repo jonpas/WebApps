@@ -23,8 +23,11 @@
   </div>
 </div>
 
+{% include 'room/index.html' with type="doodle" %}
+
 {% endblock content %}
 
 {% block js %}
+<script src="{% static 'room/main.js' %}"></script>
 <script src="{% static 'doodle/game.js' %}"></script>
 {% endblock js %}

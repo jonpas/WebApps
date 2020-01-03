@@ -10,7 +10,7 @@ class Tag(models.Model):
         return self.name
 
     def __repr__(self):
-        return f"{self.name} ({self.color})"
+        return f"Tag [{self.id}]: {self.name} ({self.color})"
 
 
 class List(models.Model):
@@ -21,7 +21,7 @@ class List(models.Model):
         return self.name
 
     def __repr__(self):
-        return f"{self.name} ({self.tags.all()})"
+        return f"List [{self.id}]: {self.name} ({self.tags.all()})"
 
 
 class Task(models.Model):
@@ -37,7 +37,8 @@ class Task(models.Model):
         return self.name
 
     def __repr__(self):
-        return f"{self.name} ({self.completed}, {self.deadline}, {self.reminder_before_deadline}, {self.tags.all()})"
+        return f"Task [{self.id}]: {self.name} ({self.completed}, {self.deadline}, {self.reminder_before_deadline}, \
+                {self.tags.all()})"
 
     def reminder(self):
         time_to_deadline = self.deadline - timezone.now()

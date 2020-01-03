@@ -1,3 +1,14 @@
 from django.db import models
 
-# Create your models here.
+
+class Room(models.Model):
+    class Meta:
+        managed = False
+
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f"Room [{self.id}]: {self.name}"
