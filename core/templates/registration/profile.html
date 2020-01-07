@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h2>{% block title %}{{ user.username }}{% endblock title %}</h2>
+
+<ul>
+  <li>Played: {{ user.doodle_profile.played }}</li>
+  <li>Wins: {{ user.doodle_profile.wins }}</li>
+  <li>Points: {{ user.doodle_profile.points }}</li>
+</ul>
+
+{% endblock content %}
