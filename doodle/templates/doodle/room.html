@@ -7,9 +7,21 @@
 
 {% block content %}
 
-<h2>{% block title %}Doodle: {{ room }}{% endblock title %}</h2>
-
 <div class="row">
+  <div class="col-8">
+    <h2>{% block title %}Doodle: {{ room }}{% endblock title %}</h2>
+  </div>
+  <div class="col-4 text-right mt-auto">
+    <a href="{% url 'doodle:room-delete' room.id %}">
+      <button type="button" class="btn btn-primary">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>
+        Room
+      </button>
+    </a>
+  </div>
+</div>
+
+<div class="row mt-2">
   <div class="col-9">
     <canvas id="canvas" width="300" height="150"></canvas>
   </div>
@@ -18,6 +30,13 @@
     <div class="row h-75">
       <div class="col">
         <textarea readonly class="form-control" id="chat-log"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <ul id="user-list">
+        </ul>
       </div>
     </div>
 
@@ -35,7 +54,7 @@
 {% endblock content %}
 
 {% block js %}
-{{ room.name|json_script:"room-name" }}
+{{ room.id|json_script:"room-id" }}
 
 <script src="{% static 'doodle/room.js' %}"></script>
 <script src="{% static 'doodle/game.js' %}"></script>

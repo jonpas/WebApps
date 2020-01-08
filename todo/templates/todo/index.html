@@ -36,10 +36,10 @@
 
       {% for tag in list.tags.all %}
       <span class="badge" style="background-color:{{ tag.color }}">
-        <a href="{% url 'todo:tag-update' tag.pk %}" class="visible-color">
+        <a href="{% url 'todo:tag-update' tag.id %}" class="visible-color">
           {{ tag.name }}
         </a>
-        <a href="{% url 'todo:tag-delete' tag.pk %}">
+        <a href="{% url 'todo:tag-delete' tag.id %}">
           <i class="fa fa-times"></i>
         </a>
       </span>
@@ -47,11 +47,11 @@
     </div>
 
     <div class="text-right">
-      <a class="badge badge-success badge-pill mr-3" href="{% url 'todo:task-create' list.pk %}"><i class="fa fa-plus"></i>
+      <a class="badge badge-success badge-pill mr-3" href="{% url 'todo:task-create' list.id %}"><i class="fa fa-plus"></i>
         <span class="d-none d-sm-inline">Task</span>
       </a>
-      <a class="badge badge-info badge-pill" href="{% url 'todo:list-update' list.pk %}"><i class="fa fa-pencil"></i></a>
-      <a class="badge badge-secondary badge-pill" href="{% url 'todo:list-delete' list.pk %}"><i class="fa fa-trash"></i></a>
+      <a class="badge badge-info badge-pill" href="{% url 'todo:list-update' list.id %}"><i class="fa fa-pencil"></i></a>
+      <a class="badge badge-secondary badge-pill" href="{% url 'todo:list-delete' list.id %}"><i class="fa fa-trash"></i></a>
     </div>
   </li>
 
@@ -68,10 +68,10 @@
 
         {% for tag in task.tags.all %}
         <span class="badge" style="background-color:{{ tag.color }}">
-          <a href="{% url 'todo:tag-update' tag.pk %}" class="visible-color">
+          <a href="{% url 'todo:tag-update' tag.id %}" class="visible-color">
             {{ tag.name }}
           </a>
-          <a href="{% url 'todo:tag-delete' tag.pk %}">
+          <a href="{% url 'todo:tag-delete' tag.id %}">
             <i class="fa fa-times"></i>
           </a>
         </span>
@@ -88,8 +88,8 @@
       </div>
 
       <div class="col text-right">
-        <a class="badge badge-info badge-pill" href="{% url 'todo:task-update' task.pk %}"><i class="fa fa-pencil"></i></a>
-        <a class="badge badge-secondary badge-pill" href="{% url 'todo:task-delete' task.pk %}"><i class="fa fa-trash"></i></a>
+        <a class="badge badge-info badge-pill" href="{% url 'todo:task-update' task.id %}"><i class="fa fa-pencil"></i></a>
+        <a class="badge badge-secondary badge-pill" href="{% url 'todo:task-delete' task.id %}"><i class="fa fa-trash"></i></a>
       </div>
     </li>
     {% endfor %}

@@ -131,6 +131,7 @@ STATIC_URL = '/static/'
 # Authentication and Authorization
 
 LOGIN_REDIRECT_URL = 'core:index'
+
 LOGOUT_REDIRECT_URL = 'core:index'
 
 
@@ -151,3 +152,12 @@ FLATPICKR_SETTINGS = {
 # Channels
 
 ASGI_APPLICATION = "webapps.routing.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}

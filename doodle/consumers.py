@@ -1,19 +1,62 @@
+from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 import json
 
+from . import models
+
+
+MAX_CLIENTS = 8
+
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
-        self.accept()
+        self.room_id = self.scope['url_route']['kwargs']['room_id']
+        self.room_group_name = f'doodle_{self.room_id}'
+        self.user = self.scope['user']
+        self.room_model = models.Room.objects.get(id=self.room_id)
+
+        # Only connect if room not full
+        if self.room_model.users.count() < MAX_CLIENTS:
+            # Join room group
+            async_to_sync(self.channel_layer.group_add)(
+                self.room_group_name,
+                self.channel_name
+            )
+            self.room_model.users.add(self.user)
+
+            self.accept()
+        else:
+            # TODO Handle on client
+            self.reject()
 
     def disconnect(self, close_code):
-        pass
+        # Leave room group
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name
+        )
+        self.room_model.users.remove(self.user)
 
+    # Receive message from WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
+        # Sebnd message to room group
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': message
+            }
+        )
+
+    # Receive message from room group
+    def chat_message(self, event):
+        message = event['message']
+
+        # Send message to WebSocket
         self.send(text_data=json.dumps({
             'message': message
         }))

@@ -1,9 +1,10 @@
-var roomName = JSON.parse(document.getElementById('room-name').textContent);
+var roomID = JSON.parse(document.getElementById('room-id').textContent);
+console.log(roomID)
 
 // Initialize chat
 var chatSocket = new WebSocket(
     'ws://' + window.location.host +
-    '/ws/doodle/' + roomName + '/');
+    '/ws/doodle/' + roomID + '/');
 
 chatSocket.onmessage = function(e) {
     var chatLog = document.getElementById('chat-log')
@@ -35,3 +36,6 @@ document.getElementById('chat-submit').onclick = function(e) {
 
     messageInputDom.value = '';
 };
+
+// Add user to list
+//document.getElementById('user-list')

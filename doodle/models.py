@@ -6,12 +6,13 @@ from django.dispatch import receiver
 
 class Room(models.Model):
     name = models.CharField(max_length=20)
+    users = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.name
 
     def __repr__(self):
-        return f"Room [{self.id}]: {self.name}"
+        return f"Room [{self.id}]: {self.name} ({self.users.all()})"
 
 
 class Profile(models.Model):
