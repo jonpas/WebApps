@@ -17,7 +17,19 @@
   </div>
 </div>
 
-{% include 'room/index.html' %}
+{% for room in object_list %}
+<ul>
+  <li>
+    <a href="{% url 'doodle:room' room.id %}">{{ room.name }}</a>
+  </li>
+</ul>
+{% empty %}
+<div class="row mt-5">
+  <div class="col">
+    <h4>No rooms available - create one!</h4>
+  </div>
+</div>
+{% endfor %}
 
 {% endblock content %}
 

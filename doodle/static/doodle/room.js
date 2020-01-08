@@ -1,29 +1,34 @@
 var roomName = JSON.parse(document.getElementById('room-name').textContent);
 
+// Initialize chat
 var chatSocket = new WebSocket(
     'ws://' + window.location.host +
     '/ws/doodle/' + roomName + '/');
 
 chatSocket.onmessage = function(e) {
+    var chatLog = document.getElementById('chat-log')
     var data = JSON.parse(e.data);
     var message = data['message'];
-    document.querySelector('#chat-log').value += (message + '\n');
+
+    chatLog.value += (message + '\n');
+    chatLog.scrollTop = chatLog.scrollHeight;
 };
 
 chatSocket.onclose = function(e) {
     console.error('Chat socket closed unexpectedly');
 };
 
-document.querySelector('#chat-message-input').focus();
-document.querySelector('#chat-message-input').onkeyup = function(e) {
+// Enter message
+document.getElementById('chat-input').onkeyup = function(e) {
     if (e.keyCode === 13) {  // enter, return
-        document.querySelector('#chat-message-submit').click();
+        document.getElementById('chat-submit').click();
     }
 };
 
-document.querySelector('#chat-message-submit').onclick = function(e) {
-    var messageInputDom = document.querySelector('#chat-message-input');
+document.getElementById('chat-submit').onclick = function(e) {
+    var messageInputDom = document.getElementById('chat-input');
     var message = messageInputDom.value;
+
     chatSocket.send(JSON.stringify({
         'message': message
     }));

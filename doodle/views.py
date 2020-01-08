@@ -12,7 +12,7 @@ class RoomListView(LoginRequiredMixin, generic.ListView):
 
 
 class RoomCreateView(LoginRequiredMixin, generic.CreateView):
-    template_name = 'room/create.html'
+    template_name = 'doodle/create.html'
     model = models.Room
     fields = '__all__'
 
@@ -23,10 +23,5 @@ class RoomCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 class RoomDetailView(generic.DetailView):
-    template_name = 'room/room.html'
+    template_name = 'doodle/room.html'
     model = models.Room
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['room'] = self.object.name
-        return context

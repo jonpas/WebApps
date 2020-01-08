@@ -65,7 +65,7 @@
             {% if user.is_authenticated %}
             {% if user.is_staff %}
             <li class="nav-item {% if admin_url in request.path %}active{% endif %}">
-              <a class="nav-link" href="{{ admin_url }}">Administration</a>
+              <a class="nav-link font-italic" href="{{ admin_url }}">Administration</a>
             </li>
             {% endif %}
             <li class="nav-item {% if profile_url in request.path %}active{% endif %}">
