@@ -29,7 +29,7 @@ class ChatConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
-                    'type': 'user_add',
+                    'type': 'user_connect',
                     'message': {
                         'id': self.user.id,
                         'name': self.user.username
@@ -54,34 +54,38 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
-                'type': 'user_remove',
+                'type': 'user_disconnect',
                 'message': self.user.id
             }
         )
 
     # Receive message from WebSocket
     def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        text_data_json['sender'] = {
+            'id': self.user.id,
+            'name': self.user.username
+        }
+
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
-            json.loads(text_data)
+            text_data_json
         )
 
     # Message handlers
 
     def chat(self, event):
-        message = event['message']
-
         self.send(text_data=json.dumps({
             'type': event['type'],
-            'message': f'[{self.user.username}] {message}'
+            'message': f'[{event["sender"]["name"]}] {event["message"]}'
         }))
 
     def draw(self, event):
         self.send(text_data=json.dumps(event))
 
-    def user_add(self, event):
+    def user_connect(self, event):
         self.send(text_data=json.dumps(event))
 
-    def user_remove(self, event):
+    def user_disconnect(self, event):
         self.send(text_data=json.dumps(event))

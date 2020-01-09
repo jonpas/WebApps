@@ -15,9 +15,9 @@ chatSocket.onmessage = function(e) {
         logMessage(message);
     } else if (msgtype == 'draw') {
         draw(message.from, message.to);
-    } else if (msgtype == 'user_add') {
+    } else if (msgtype == 'user_connect') {
         addUser(message['id'], message['name']);
-    } else if (msgtype == 'user_remove') {
+    } else if (msgtype == 'user_disconnect') {
         removeUser(message);
     }
 };
