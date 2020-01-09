@@ -113,13 +113,17 @@ class ChatConsumer(WebsocketConsumer):
             text_data_json
         )
 
-
     # Message handlers
 
     # Chat
     def chat(self, event):
-        event['message'] = f'[{event["sender"]["name"]}] {event["message"]}'
-        self.send(text_data=json.dumps(event))
+        message = event['message']
+        sender = event['sender']['name']
+
+        self.send(text_data=json.dumps({
+            'type': 'chat',
+            'message': f'[{sender}] {message}'
+        }))
 
     def user_connect(self, event):
         self.send(text_data=json.dumps(event))
