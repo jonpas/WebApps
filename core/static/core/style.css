@@ -49,3 +49,8 @@ a[aria-expanded=true] .collapse-closed {
 a[aria-expanded=false] .collapse-open {
     display: none;
 }
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+}

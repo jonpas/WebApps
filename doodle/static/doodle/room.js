@@ -19,6 +19,15 @@ chatSocket.onmessage = function(e) {
         addUser(message['id'], message['name']);
     } else if (msgtype == 'user_disconnect') {
         removeUser(message);
+    } else if (msgtype == 'game_ready') {
+        allowStart(message);
+    } else if (msgtype == 'game_start') {
+        if (message['draw']) {
+            allowDraw(true);
+        } else {
+            allowDraw(false);
+        }
+        //startGame();
     }
 };
 
@@ -51,14 +60,6 @@ function logMessage(message) {
     chatLog.scrollTop = chatLog.scrollHeight;
 }
 
-// Drawing
-function sendDraw(from, to) {
-    chatSocket.send(JSON.stringify({
-        'type': 'draw',
-        'message': {from, to}
-    }));
-}
-
 // Members
 function addUser(id, name) {
     let userExists = document.getElementById('user-' + id);
@@ -83,4 +84,19 @@ function addUser(id, name) {
 function removeUser(id) {
     let userNode = document.getElementById('user-' + id);
     userNode.parentNode.removeChild(userNode); // Browser compatibility
+}
+
+// Drawing
+function sendDraw(from, to) {
+    chatSocket.send(JSON.stringify({
+        'type': 'draw',
+        'message': {from, to}
+    }));
+}
+
+// Game
+function sendStartGame() {
+    chatSocket.send(JSON.stringify({
+        'type': 'game_start'
+    }));
 }
