@@ -1,25 +1,32 @@
-var roomID = JSON.parse(document.getElementById('room-id').textContent);
-console.log(roomID)
+let roomID = JSON.parse(document.getElementById('room-id').textContent);
 
-// Initialize chat
-var chatSocket = new WebSocket(
+// Initialize messaging
+let chatSocket = new WebSocket(
     'ws://' + window.location.host +
     '/ws/doodle/' + roomID + '/');
 
 chatSocket.onmessage = function(e) {
-    var chatLog = document.getElementById('chat-log')
-    var data = JSON.parse(e.data);
-    var message = data['message'];
+    let chatLog = document.getElementById('chat-log');
+    let data = JSON.parse(e.data);
+    let msgtype = data['type'];
+    let message = data['message'];
 
-    chatLog.value += (message + '\n');
-    chatLog.scrollTop = chatLog.scrollHeight;
+    if (msgtype == 'chat') {
+        logMessage(message);
+    } else if (msgtype == 'draw') {
+        draw(message.from, message.to);
+    } else if (msgtype == 'user_add') {
+        addUser(message['id'], message['name']);
+    } else if (msgtype == 'user_remove') {
+        removeUser(message);
+    }
 };
 
 chatSocket.onclose = function(e) {
-    console.error('Chat socket closed unexpectedly');
+    logMessage('Connection lost!');
 };
 
-// Enter message
+// Chat
 document.getElementById('chat-input').onkeyup = function(e) {
     if (e.keyCode === 13) {  // enter, return
         document.getElementById('chat-submit').click();
@@ -27,15 +34,53 @@ document.getElementById('chat-input').onkeyup = function(e) {
 };
 
 document.getElementById('chat-submit').onclick = function(e) {
-    var messageInputDom = document.getElementById('chat-input');
-    var message = messageInputDom.value;
+    let messageInputDom = document.getElementById('chat-input');
+    let message = messageInputDom.value;
 
     chatSocket.send(JSON.stringify({
+        'type': 'chat',
         'message': message
     }));
 
     messageInputDom.value = '';
 };
 
-// Add user to list
-//document.getElementById('user-list')
+function logMessage(message) {
+    let chatLog = document.getElementById('chat-log');
+    chatLog.value += (message + '\n');
+    chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+// Drawing
+function sendDraw(from, to) {
+    chatSocket.send(JSON.stringify({
+        'type': 'draw',
+        'message': {from, to}
+    }));
+}
+
+// Members
+function addUser(id, name) {
+    let userExists = document.getElementById('user-' + id);
+    if (userExists === null) {
+        let userList = document.getElementById('user-list');
+
+        let userNode = document.createElement('a');
+        userNode.setAttribute('href', '/accounts/' + id);
+        userNode.setAttribute('id', 'user-' + id);
+
+        let userBadge = document.createElement('span');
+        userBadge.setAttribute('class', 'badge badge-success');
+
+        let userName = document.createTextNode(name);
+
+        userList.appendChild(userNode);
+        userNode.appendChild(userBadge);
+        userBadge.appendChild(userName);
+    }
+}
+
+function removeUser(id) {
+    let userNode = document.getElementById('user-' + id);
+    userNode.parentNode.removeChild(userNode); // Browser compatibility
+}

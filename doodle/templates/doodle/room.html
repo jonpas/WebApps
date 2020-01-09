@@ -11,6 +11,7 @@
   <div class="col-8">
     <h2>{% block title %}Doodle: {{ room }}{% endblock title %}</h2>
   </div>
+
   <div class="col-4 text-right mt-auto">
     <a href="{% url 'doodle:room-delete' room.id %}">
       <button type="button" class="btn btn-primary">
@@ -23,13 +24,28 @@
 
 <div class="row mt-2">
   <div class="col-9">
-    <canvas id="canvas" width="300" height="150"></canvas>
+    <div class="row">
+      <div class="col">
+        <canvas id="canvas" width="600" height="200"></canvas>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col" id="user-list">
+        {% for user in room.users.all %}
+        <a href="{% url 'core:profile' user.id %}" id="user-{{ user.id }}">
+          <span class="badge badge-success">
+            {{ user.username }}
+          </span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 
   <div class="col-3">
-    <div class="row h-75">
+    <div class="row h-100">
       <div class="col">
-        <textarea readonly class="form-control" id="chat-log"></textarea>
+        <textarea class="form-control" id="chat-log" readonly autocomplete="off"></textarea>
       </div>
     </div>
 

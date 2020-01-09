@@ -25,6 +25,18 @@ class ChatConsumer(WebsocketConsumer):
             )
             self.room_model.users.add(self.user)
 
+            # Send message to room group
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    'type': 'user_add',
+                    'message': {
+                        'id': self.user.id,
+                        'name': self.user.username
+                    }
+                }
+            )
+
             self.accept()
         else:
             # TODO Handle on client
@@ -38,25 +50,38 @@ class ChatConsumer(WebsocketConsumer):
         )
         self.room_model.users.remove(self.user)
 
-    # Receive message from WebSocket
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-
-        # Sebnd message to room group
+        # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
-                'type': 'chat_message',
-                'message': message
+                'type': 'user_remove',
+                'message': self.user.id
             }
         )
 
-    # Receive message from room group
-    def chat_message(self, event):
+    # Receive message from WebSocket
+    def receive(self, text_data):
+        # Send message to room group
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            json.loads(text_data)
+        )
+
+    # Message handlers
+
+    def chat(self, event):
         message = event['message']
 
-        # Send message to WebSocket
         self.send(text_data=json.dumps({
-            'message': message
+            'type': event['type'],
+            'message': f'[{self.user.username}] {message}'
         }))
+
+    def draw(self, event):
+        self.send(text_data=json.dumps(event))
+
+    def user_add(self, event):
+        self.send(text_data=json.dumps(event))
+
+    def user_remove(self, event):
+        self.send(text_data=json.dumps(event))
