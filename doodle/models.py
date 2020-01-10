@@ -40,8 +40,13 @@ class Room(models.Model):
             return user
 
     def get_random_word(self):
-        # TODO Word library
-        words = ['bee', 'snake', 'cat', 'street', 'cake']
+        words = [
+            'bee', 'snake', 'cat', 'street', 'cake', 'book', 'car', 'truck', 'dolphin', 'computer',
+            'gun', 'keyboard', 'mouse', 'human', 'hair', 'ears', 'nose', 'eyes', 'feet', 'foot',
+            'table', 'house', 'door', 'garage', 'light', 'darkness', 'bone', 'food', 'plate', 'fork',
+            'spoon', 'knife', 'stick', 'temple', 'sea', 'boat', 'pirate', 'hand', 'notebook', 'pen',
+            'glasses', 'backpack', 'laptop', 'phone', 'sleep', 'bed', 'chair', 'spaceship', 'key', 'elephant'
+        ]
         return random.choice(words)
 
 

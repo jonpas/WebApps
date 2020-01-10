@@ -8,8 +8,8 @@ import math
 
 from . import models
 
-MIN_CLIENTS = 2  # 3
-MAX_CLIENTS = 8  # 8
+MIN_CLIENTS = 2  # TODO 3
+MAX_CLIENTS = 8
 TIMEOUT = 180  # Seconds
 MAX_POINTS = 300
 
