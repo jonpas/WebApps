@@ -13,13 +13,13 @@ Todo application featuring lists and items with deadlines and reminders, tags an
 
 ### Doodle (game)
 
-_`doodle` (requires: `core`, `rooms`, login)_
+_`doodle` (requires: `core`, login)_
 
 Drawing game application featuring draw and guess chat-based multiplayer game with lobbies, login and statistics tracking, animations and sound effects.
 
 ### Ludo (game)
 
-_`ludo` (requires: `core`, `rooms`, login)_
+_`ludo` (requires: `core`, login)_
 
 Turn-based game application featuring interactive multiplayer board game [ludo](https://en.wikipedia.org/wiki/Ludo_(board_game)) with lobbies, login, statistics tracking, animations and sound effects.
 
@@ -37,12 +37,6 @@ Transportation helper application allowing registered users to offer transportat
 _`core`_
 
 Core systems application, providing login and registration services, base template with navigation bar, font page and linking all pages together.
-
-### Rooms
-
-_`rooms` (requires: `core`)_
-
-Abstracted application used by `doodle` and `ludo`, providing room creation and joining services as well as live chat (messaging).
 
 
 ## Setup
