@@ -173,8 +173,6 @@ class ChatConsumer(WebsocketConsumer):
             # Round up to nearest ten
             winner_points = int(math.ceil(winner_points / 10.0)) * 10
             player_points = int(math.ceil(player_points / 10.0)) * 10
-            print(1, winner_points)
-            print(2, player_points)
 
             # Add new points (winner is current user, player is drawer)
             models.Profile.objects.filter(id=self.user.id).update(
