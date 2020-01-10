@@ -39,11 +39,11 @@ chatSocket.onmessage = function(e) {
         if (data['guessed']) {
             let winner = data['winner']['name'];
             logMessage('GAME', '\'' + winner + '\' guessed \'' + word + '\'!');
+            playWinEffects();
         } else {
             logMessage('GAME', '\'' + word + '\' remains a mystery!');
         }
         clearTimeout(timeout);
-        playEffects(data['guessed']);
     } else if (msgtype == 'game_end') {
         allowDraw(true);
         logMessage('GAME', 'Finished!');

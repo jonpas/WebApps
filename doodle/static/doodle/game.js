@@ -72,21 +72,16 @@ function allowDraw(allow) {
     allowDrawing = allow;
 }
 
-function playEffects(win) {
+function playWinEffects() {
     // Sound effect
     let audio = document.getElementById('audio-win');
 
     // Animation
-    if (win) {
-        canvas.style.backgroundColor = 'green';
-        audio.play();
-    } else {
-        canvas.style.backgroundColor = 'red';
-    }
+    canvas.style.backgroundColor = 'green';
+    audio.play();
 
     // Restore
     setTimeout(function() {
         canvas.style.backgroundColor = 'white';
-        //audio.stop();
     }, 1000);
 }
