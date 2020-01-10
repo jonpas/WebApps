@@ -2,6 +2,39 @@
 
 {% block content %}
 
-<p>TODO</p>
+<div class="row">
+  <div class="col-4">
+    <h2>{% block title %}Ludo{% endblock title %}</h2>
+  </div>
+  <div class="col-8 text-right mt-auto">
+    <a href="{% url 'ludo:room-create' %}">
+      <button type="button" class="btn btn-primary">
+        <span class="badge badge-success badge-pill mr-1"><i class="fa fa-plus"></i></span>
+        Room
+      </button>
+    </a>
+  </div>
+</div>
+
+<div class="list-group">
+  {% for room in object_list %}
+  <a href="{% url 'ludo:room' room.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 rounded-0 bg-primary mt-2">
+    <div class="text-left">{{ room.name }}</div>
+    <div class="text-right">
+      {% for room_user in room.users.all %}
+      {% if room_user.id != user.id %} <!-- filter out current user (Chrome compatibility) -->
+      <span class="badge badge-success">{{ room_user.get_username }}</span>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </a>
+  {% empty %}
+  <div class="row mt-5">
+    <div class="col">
+      <h4>No rooms available - create one!</h4>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 
 {% endblock content %}

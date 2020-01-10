@@ -1,6 +1,47 @@
+from django.shortcuts import render, redirect
 from django.views import generic
+from django.urls import reverse_lazy
+from django import http
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from . import models
 
-class IndexView(LoginRequiredMixin, generic.TemplateView):
+
+class RoomListView(LoginRequiredMixin, generic.ListView):
     template_name = 'ludo/index.html'
+    model = models.Room
+
+
+class RoomDetailView(LoginRequiredMixin, generic.DetailView):
+    template_name = 'ludo/room.html'
+    model = models.Room
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.object = self.get_object()
+        except http.Http404:
+            return redirect(reverse_lazy('ludo:index'))
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+
+class RoomCreateView(LoginRequiredMixin, generic.CreateView):
+    template_name = 'ludo/create.html'
+    model = models.Room
+    fields = ['name']
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('ludo:room', kwargs={
+            'pk': self.object.id,
+        })
+
+
+class RoomDeleteView(LoginRequiredMixin, generic.DeleteView):
+    template_name = 'ludo/delete.html'
+    model = models.Room
+    success_url = reverse_lazy('ludo:index')

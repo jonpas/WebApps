@@ -4,11 +4,28 @@
 
 <h2>{% block title %}Profile: {{ user.username }}{% endblock title %}</h2>
 
-<h4>Doodle</h4>
-<ul>
-  <li>Played: {{ user.doodle_profile.played }} <sub><i>(# of drawings)</i></sub></li>
-  <li>Wins: {{ user.doodle_profile.wins }} <sub><i>(# of correct guesses)</i></sub></li>
-  <li>Points: {{ user.doodle_profile.points }}</li>
-</ul>
+<div class="row">
+  <div class="col">
+    <h4>Doodle</h4>
+    <ul>
+      <li>Played: {{ user.doodle_profile.played }} <sub><i>(# of drawings)</i></sub></li>
+      <li>Wins: {{ user.doodle_profile.wins }} <sub><i>(# of correct guesses)</i></sub></li>
+      <li>Points: {{ user.doodle_profile.points }}</li>
+    </ul>
+  </div>
+
+  <div class="col">
+    <h4>Ludo</h4>
+    <ul>
+      <li>Played: {{ user.ludo_profile.played }}</li>
+      <li>Wins: {{ user.ludo_profile.wins }}</li>
+      <ul>
+        <li>2nd: {{ user.ludo_profile.seconds }}</li>
+        <li>3rd: {{ user.ludo_profile.thirds }}</li>
+        <li>4th: {{ user.ludo_profile.fourths }}</li>
+      </ul>
+    </ul>
+  </div>
+</div>
 
 {% endblock content %}

@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h2>{% block title %}Delete Room{% endblock title %}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <p>Are you sure you want to delete "{{ object }}"?</p>
+  <a href="{% url 'ludo:room' object.id %}">
+    <button type="button" class="btn btn-primary">Cancel</button>
+  </a>
+  <button type="submit" class="btn btn-danger">Confirm</button>
+</form>
+
+{% endblock content %}

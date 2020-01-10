@@ -1,0 +1,60 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'ludo/room.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+<audio id="audio-win">
+  <source src="{% static 'core/assets/sound_win.mp3' %}" type="audio/mpeg">
+</audio>
+
+<div class="row">
+  <div class="col-8">
+    <h2>{% block title %}Ludo: {{ room }}{% endblock title %}</h2>
+  </div>
+
+  {% if room.owner.id == user.id %}
+  <div class="col-4 text-right mt-auto">
+    <a href="{% url 'ludo:room-delete' room.id %}">
+      <button type="button" class="btn btn-primary">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>
+        Room
+      </button>
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<div class="row mt-2">
+  <div class="col-8">
+    Board Location
+  </div>
+  <div class="col-4">
+    <textarea class="form-control" id="log" readonly autocomplete="off"></textarea>
+  </div>
+</div>
+
+<div class="row pt-2">
+  <div class="col text-right" id="user-list">
+    {% for user in room.users.all %}
+    <a href="{% url 'core:profile' user.id %}" id="user-{{ user.id }}">
+      <span class="badge badge-success">
+        {{ user.username }}
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+
+</div>
+
+{% endblock content %}
+
+{% block js %}
+{{ room.id|json_script:"room-id" }}
+
+<script src="{% static 'ludo/room.js' %}"></script>
+<script src="{% static 'ludo/game.js' %}"></script>
+{% endblock js %}
