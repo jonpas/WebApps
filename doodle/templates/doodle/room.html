@@ -14,12 +14,10 @@
 
   {% if room.owner.id == user.id %}
   <div class="col-4 text-right mt-auto">
-    <a href="#" class="disabled">
-      <button type="button" class="btn btn-success" id="start-button" disabled>
-        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-rocket"></i></span>
-        Start
-      </button>
-    </a>
+    <button type="button" class="btn btn-success disabled" id="start-button">
+      <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-rocket"></i></span>
+      Start
+    </button>
     <a href="{% url 'doodle:room-delete' room.id %}">
       <button type="button" class="btn btn-primary">
         <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>

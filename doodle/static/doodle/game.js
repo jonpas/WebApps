@@ -4,6 +4,7 @@ let allowDrawing = true;
 let drawing = false;
 let prevX = 0;
 let prevY = 0;
+let time = 0;
 
 // Drawing
 canvas.addEventListener('mousemove', function(e) {
@@ -28,7 +29,9 @@ function drawControl(res, e) {
 
         let curX = e.clientX - canvas.getBoundingClientRect().left;
         let curY = e.clientY - canvas.getBoundingClientRect().top;
-        sendDraw({x: curX - 1, y: curY - 1}, {x: curX, y: curY});
+        if (allowDrawing) {
+            sendDraw({x: curX - 1, y: curY - 1}, {x: curX, y: curY});
+        }
         prevX = curX;
         prevY = curY;
     } else if (res == 'up' || res == 'down') {
@@ -37,7 +40,9 @@ function drawControl(res, e) {
         if (drawing) {
             let curX = e.clientX - canvas.getBoundingClientRect().left;
             let curY = e.clientY - canvas.getBoundingClientRect().top;
-            sendDraw({x: prevX, y: prevY}, {x: curX, y: curY});
+            if (allowDrawing) {
+                sendDraw({x: prevX, y: prevY}, {x: curX, y: curY});
+            }
             prevX = curX;
             prevY = curY;
         }
@@ -45,15 +50,13 @@ function drawControl(res, e) {
 }
 
 function draw(from, to) {
-    if (allowDrawing) {
-        ctx.beginPath();
-        ctx.moveTo(from.x, from.y);
-        ctx.lineTo(to.x, to.y);
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.closePath();
-    }
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.closePath();
 }
 
 function erase() {
@@ -62,17 +65,15 @@ function erase() {
 
 // Game
 function allowStart(allow) {
-    console.log('allowStart: ' + allow);
     let startButton = document.getElementById('start-button');
     if (allow) {
-        startButton.removeAttribute('disabled');
-        startButton.parentNode.classList.remove('disabled');
+        startButton.classList.remove('disabled');
     } else {
-        startButton.setAttribute('disabled', '');
-        startButton.parentNode.classList.add('disabled');
+        startButton.classList.add('disabled');
     }
 }
 
 function allowDraw(allow) {
+    erase();
     allowDrawing = allow;
 }

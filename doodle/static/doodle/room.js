@@ -1,4 +1,5 @@
 let roomID = JSON.parse(document.getElementById('room-id').textContent);
+let timeout = null;
 
 // Initialize messaging
 let chatSocket = new WebSocket(
@@ -9,30 +10,52 @@ chatSocket.onmessage = function(e) {
     let chatLog = document.getElementById('chat-log');
     let data = JSON.parse(e.data);
     let msgtype = data['type'];
-    let message = data['message'];
 
     if (msgtype == 'chat') {
-        logMessage(message);
+        let sender = data['sender']['name'];
+        logMessage(sender, data['message']);
     } else if (msgtype == 'draw') {
-        draw(message.from, message.to);
+        draw(data['from'], data['to']);
     } else if (msgtype == 'user_connect') {
-        addUser(message['id'], message['name']);
+        addUser(data['id'], data['name']);
     } else if (msgtype == 'user_disconnect') {
-        removeUser(message);
+        removeUser(data['id'], data['name']);
     } else if (msgtype == 'game_ready') {
-        allowStart(message);
+        allowStart(data['ready']);
     } else if (msgtype == 'game_start') {
-        if (message['draw']) {
+        let player = data['player']['name'];
+        if (data['draw']) {
             allowDraw(true);
+            logMessage('GAME', 'You are drawing a \'' + data['word'] + '\'!');
+            clearTimeout(timeout);
+            timeout = setTimeout(sendTimeout, data['timeout'] * 1000);
         } else {
             allowDraw(false);
+            logMessage('GAME', '\'' + player + '\' is drawing! Guess!');
+            clearTimeout(timeout);
         }
-        //startGame();
+    } else if (msgtype == 'game_next') {
+        let word = data['word'];
+        if (data['guessed']) {
+            let winner = data['winner']['name'];
+            logMessage('GAME', '\'' + winner + '\' guessed \'' + word + '\'!');
+            // TODO Animation and sound effect
+        } else {
+            logMessage('GAME', '\'' + word + '\' remains a mystery!');
+        }
+        clearTimeout(timeout);
+    } else if (msgtype == 'game_end') {
+        allowDraw(true);
+        logMessage('GAME', 'Finished!');
+        clearTimeout(timeout);
+    } else if (msgtype == 'game_timeout') {
+        let player = data['player']['name'];
+        logMessage('GAME', '\'' + player + '\' timed out!');
     }
 };
 
 chatSocket.onclose = function(e) {
-    logMessage('Connection lost!');
+    logMessage('ROOM', 'Connection lost!');
 };
 
 // Chat
@@ -54,9 +77,9 @@ document.getElementById('chat-submit').onclick = function(e) {
     messageInputDom.value = '';
 };
 
-function logMessage(message) {
+function logMessage(sender, message) {
     let chatLog = document.getElementById('chat-log');
-    chatLog.value += (message + '\n');
+    chatLog.value += ('[' + sender + '] ' + message + '\n');
     chatLog.scrollTop = chatLog.scrollHeight;
 }
 
@@ -78,25 +101,37 @@ function addUser(id, name) {
         userList.appendChild(userNode);
         userNode.appendChild(userBadge);
         userBadge.appendChild(userName);
+
+        logMessage('ROOM', '\'' + name + '\' joined!');
     }
 }
 
-function removeUser(id) {
+function removeUser(id, name) {
     let userNode = document.getElementById('user-' + id);
     userNode.parentNode.removeChild(userNode); // Browser compatibility
+    logMessage('ROOM', '\'' + name + '\' left!');
 }
 
 // Drawing
 function sendDraw(from, to) {
     chatSocket.send(JSON.stringify({
         'type': 'draw',
-        'message': {from, to}
+        'from': from,
+        'to': to
     }));
 }
 
 // Game
-function sendStartGame() {
+if (document.getElementById('start-button') !== null) {
+    document.getElementById('start-button').onclick = function(e) {
+        chatSocket.send(JSON.stringify({
+            'type': 'game_start'
+        }));
+    }
+}
+
+function sendTimeout() {
     chatSocket.send(JSON.stringify({
-        'type': 'game_start'
+        'type': 'game_timeout'
     }));
 }

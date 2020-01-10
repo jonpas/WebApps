@@ -7,6 +7,8 @@ class DoodleConfig(AppConfig):
     def ready(self):
         from . import models
 
-        # Clear "temporary" users field on room as all websockets were closed (server offline)
-        for model in models.Room.objects.all():
-            model.users.clear()
+        # Clear "temporary" fields on room as all websockets were closed (server offline)
+        for room in models.Room.objects.all():
+            room.users.clear()
+
+        models.Game.objects.all().delete()

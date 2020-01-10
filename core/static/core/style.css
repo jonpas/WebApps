@@ -50,7 +50,7 @@ a[aria-expanded=false] .collapse-open {
     display: none;
 }
 
-a.disabled {
+.disabled {
     pointer-events: none;
     cursor: default;
 }

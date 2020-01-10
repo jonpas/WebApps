@@ -4,9 +4,10 @@
 
 <h2>{% block title %}Profile: {{ user.username }}{% endblock title %}</h2>
 
+<h4>Doodle</h4>
 <ul>
-  <li>Played: {{ user.doodle_profile.played }}</li>
-  <li>Wins: {{ user.doodle_profile.wins }}</li>
+  <li>Played: {{ user.doodle_profile.played }} <sub><i>(# of drawings)</i></sub></li>
+  <li>Wins: {{ user.doodle_profile.wins }} <sub><i>(# of correct guesses)</i></sub></li>
   <li>Points: {{ user.doodle_profile.points }}</li>
 </ul>
 
