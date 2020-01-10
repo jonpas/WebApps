@@ -4,7 +4,6 @@ let allowDrawing = true;
 let drawing = false;
 let prevX = 0;
 let prevY = 0;
-let time = 0;
 
 // Drawing
 canvas.addEventListener('mousemove', function(e) {
@@ -76,4 +75,23 @@ function allowStart(allow) {
 function allowDraw(allow) {
     erase();
     allowDrawing = allow;
+}
+
+function playEffects(win) {
+    // Sound effect
+    let audio = document.getElementById('audio-win');
+
+    // Animation
+    if (win) {
+        canvas.style.backgroundColor = 'green';
+        audio.play();
+    } else {
+        canvas.style.backgroundColor = 'red';
+    }
+
+    // Restore
+    setTimeout(function() {
+        canvas.style.backgroundColor = 'white';
+        //audio.stop();
+    }, 1000);
 }

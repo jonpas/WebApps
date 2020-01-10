@@ -6,6 +6,8 @@ let chatSocket = new WebSocket(
     'ws://' + window.location.host +
     '/ws/doodle/' + roomID + '/');
 
+
+
 chatSocket.onmessage = function(e) {
     let chatLog = document.getElementById('chat-log');
     let data = JSON.parse(e.data);
@@ -39,11 +41,11 @@ chatSocket.onmessage = function(e) {
         if (data['guessed']) {
             let winner = data['winner']['name'];
             logMessage('GAME', '\'' + winner + '\' guessed \'' + word + '\'!');
-            // TODO Animation and sound effect
         } else {
             logMessage('GAME', '\'' + word + '\' remains a mystery!');
         }
         clearTimeout(timeout);
+        playEffects(data['guessed']);
     } else if (msgtype == 'game_end') {
         allowDraw(true);
         logMessage('GAME', 'Finished!');

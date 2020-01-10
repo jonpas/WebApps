@@ -2,6 +2,9 @@
     background-color: white;
     /*width: 100%; TODO Responsive canvas*/
     height: auto;
+
+    transition-property: background-color;
+    transition-duration: 1s;
 }
 
 #chat-log {
