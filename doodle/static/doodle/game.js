@@ -75,12 +75,12 @@ function allowDraw(allow) {
 function playWinEffects() {
     // Sound effect
     let audio = document.getElementById('audio-win');
+    audio.play();
 
     // Animation
     canvas.style.backgroundColor = 'green';
-    audio.play();
 
-    // Restore
+    // Restore animation
     setTimeout(function() {
         canvas.style.backgroundColor = 'white';
     }, 1000);

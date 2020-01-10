@@ -22,8 +22,8 @@ class Game(models.Model):
 
 class Room(models.Model):
     name = models.CharField(max_length=20)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
-    users = models.ManyToManyField(User, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doodle_owner')
+    users = models.ManyToManyField(User, blank=True, related_name='doodle_users')
     game = models.ForeignKey(Game, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
@@ -55,6 +55,12 @@ class Profile(models.Model):
     played = models.IntegerField(default='0')  # Number of times player was drawing
     wins = models.IntegerField(default='0')
     points = models.IntegerField(default='0')
+
+    def __str__(self):
+        return f'{self.user.id} Profile (Doodle)'
+
+    def __repr__(self):
+        return f'Profile (Doodle) [{self.id}]: played={self.played}, wins={self.wins}, points={self.points}'
 
 
 @receiver(post_save, sender=User)
