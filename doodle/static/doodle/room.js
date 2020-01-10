@@ -6,8 +6,6 @@ let chatSocket = new WebSocket(
     'ws://' + window.location.host +
     '/ws/doodle/' + roomID + '/');
 
-
-
 chatSocket.onmessage = function(e) {
     let chatLog = document.getElementById('chat-log');
     let data = JSON.parse(e.data);

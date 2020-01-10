@@ -2,50 +2,45 @@ let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
 let allowDrawing = true;
 let drawing = false;
-let prevX = 0;
-let prevY = 0;
+let prevMousePos = {x: 0, y: 0};
+
+// Responsive canvas
+canvas.width = 1280;
+canvas.height = 1024;
+canvas.style.width = '100%';
+canvas.style.height = '100%';
 
 // Drawing
-canvas.addEventListener('mousemove', function(e) {
-    drawControl('move', e)
-}, false);
+canvas.addEventListener('mousemove', moveDraw);
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mouseup', stopDraw);
+canvas.addEventListener('mouseout', stopDraw);
 
-canvas.addEventListener('mousedown', function(e) {
-    drawControl('down', e)
-}, false);
-
-canvas.addEventListener('mouseup', function(e) {
-    drawControl('up', e)
-}, false);
-
-canvas.addEventListener('mouseout', function(e) {
-    drawControl('out', e)
-}, false);
-
-function drawControl(res, e) {
-    if (res == 'down') {
+function startDraw(e) {
+    if (allowDrawing) {
         drawing = true;
-
-        let curX = e.clientX - canvas.getBoundingClientRect().left;
-        let curY = e.clientY - canvas.getBoundingClientRect().top;
-        if (allowDrawing) {
-            sendDraw({x: curX - 1, y: curY - 1}, {x: curX, y: curY});
-        }
-        prevX = curX;
-        prevY = curY;
-    } else if (res == 'up' || res == 'down') {
-        drawing = false;
-    } else if (res == 'move') {
-        if (drawing) {
-            let curX = e.clientX - canvas.getBoundingClientRect().left;
-            let curY = e.clientY - canvas.getBoundingClientRect().top;
-            if (allowDrawing) {
-                sendDraw({x: prevX, y: prevY}, {x: curX, y: curY});
-            }
-            prevX = curX;
-            prevY = curY;
-        }
+        let curMousePos = getMousePosition(e);
+        sendDraw({x: curMousePos.x - 1, y: curMousePos.y - 1}, curMousePos);
+        prevMousePos = curMousePos;
     }
+}
+
+function stopDraw(e) {
+    drawing = false;
+}
+
+function moveDraw(e) {
+    if (drawing && allowDrawing) {
+        let curMousePos = getMousePosition(e);
+        sendDraw(prevMousePos, curMousePos);
+        prevMousePos = curMousePos;
+    }
+}
+
+function getMousePosition(e) {
+    var mouseX = e.offsetX * canvas.width / canvas.clientWidth | 0;
+    var mouseY = e.offsetY * canvas.height / canvas.clientHeight | 0;
+    return {x: mouseX, y: mouseY};
 }
 
 function draw(from, to) {

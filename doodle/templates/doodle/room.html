@@ -8,7 +8,7 @@
 {% block content %}
 
 <audio id="audio-win">
-  <source src="{% static 'assets/sound_win.mp3' %}" type="audio/mpeg">
+  <source src="{% static 'doodle/assets/sound_win.mp3' %}" type="audio/mpeg">
 </audio>
 
 <div class="row">
@@ -33,47 +33,30 @@
 </div>
 
 <div class="row mt-2">
-  <div class="col-9">
-    <div class="row">
-      <div class="col">
-        <canvas id="canvas" width="600" height="200"></canvas>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col" id="user-list">
-        {% for user in room.users.all %}
-        <a href="{% url 'core:profile' user.id %}" id="user-{{ user.id }}">
-          <span class="badge badge-success">
-            {{ user.username }}
-          </span>
-        </a>
-        {% endfor %}
-      </div>
-    </div>
+  <div class="col-8">
+    <canvas id="canvas"></canvas>
+  </div>
+  <div class="col-4">
+    <textarea class="form-control" id="chat-log" readonly autocomplete="off"></textarea>
+  </div>
+</div>
+
+<div class="row pt-1">
+  <div class="col-8 text-right my-auto" id="user-list">
+    {% for user in room.users.all %}
+    <a href="{% url 'core:profile' user.id %}" id="user-{{ user.id }}">
+      <span class="badge badge-success">
+        {{ user.username }}
+      </span>
+    </a>
+    {% endfor %}
   </div>
 
-  <div class="col-3">
-    <div class="row h-100">
-      <div class="col">
-        <textarea class="form-control" id="chat-log" readonly autocomplete="off"></textarea>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        <ul id="user-list">
-        </ul>
-      </div>
-    </div>
-
-    <div class="row mt-1">
-      <div class="col-8 pr-1">
-        <input class="form-control w-100" id="chat-input" type="text">
-      </div>
-      <div class="col-4 px-0">
-        <button id="chat-submit" type="submit" class="btn btn-primary">Send</button>
-      </div>
-    </div>
+  <div class="col-3 pr-0">
+    <input class="form-control w-100" id="chat-input" type="text">
+  </div>
+  <div class="col d-block">
+    <button id="chat-submit" type="submit" class="btn btn-primary btn-block">Send</button>
   </div>
 </div>
 
