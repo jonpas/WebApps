@@ -59,12 +59,12 @@ class GameConsumer(WebsocketConsumer):
         self.send_all(self.msg_user_disconnect())
 
         # Move to next player if current one disconnected (disqualify)
-        user_count = room_model.users.count()
-        if room_model.game:
-            if user_count < MIN_CLIENTS:
-                self.end_game()
-            elif room_model.game.player.id == self.user.id:
-                self.next_game(timeout=True)
+        # user_count = room_model.users.count()
+        # if room_model.game:
+        #     if user_count < MIN_CLIENTS:
+        #         self.end_game()
+        #     elif room_model.game.player.id == self.user.id:
+        #         self.next_game(timeout=True)
 
     # Receive message from WebSocket
     def receive(self, text_data):
