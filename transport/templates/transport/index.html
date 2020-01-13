@@ -2,6 +2,32 @@
 
 {% block content %}
 
-<p>TODO</p>
+<div class="row">
+  <div class="col-4">
+    <h2>{% block title %}Transports{% endblock title %}</h2>
+  </div>
+  <div class="col-8 text-right mt-auto">
+    <a href="{% url 'transport:create' %}">
+      <button type="button" class="btn btn-primary">
+        <span class="badge badge-success badge-pill mr-1"><i class="fa fa-plus"></i></span>
+        Transport
+      </button>
+    </a>
+  </div>
+</div>
+
+<div class="list-group">
+  {% for transport in object_list %}
+  <a href="{% url 'transport:detail' transport.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 rounded-0 bg-primary mt-2">
+    <div class="text-left">{{ transport.carrier.get_username }}</div>
+  </a>
+  {% empty %}
+  <div class="row mt-5">
+    <div class="col">
+      <h4>No transports available - create one!</h4>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 
 {% endblock content %}

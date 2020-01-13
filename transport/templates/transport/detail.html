@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-8">
+    <h2>{% block title %}Transport: {{ transport.carrier.get_username }}{% endblock title %}</h2>
+  </div>
+
+  {% if transport.carrier.id == user.id %}
+  <div class="col-4 text-right mt-auto">
+    <button type="button" class="btn btn-success disabled" id="start-button">
+      <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-rocket"></i></span>
+      Start
+    </button>
+    <a href="{% url 'transport:delete' transport.id %}">
+      <button type="button" class="btn btn-primary">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>
+        Transport
+      </button>
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<div class="row pt-1">
+  <div class="col">
+    {% for passenger in transport.passengers.all %}
+    <a href="{% url 'core:profile' passenger.id %}">
+      <span class="badge badge-success">
+        {{ passenger.get_username }}
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock content %}
