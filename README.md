@@ -2,6 +2,8 @@
 
 Various web applications built at Web Technologies (slo. Spletne Tehnologije) using [Django](https://www.djangoproject.com/) and [Bootstrap](https://getbootstrap.com/), showcasing different systems and technologies in 4 distinct applications.
 
+Mobile version of this application also exists as Android WebView: [jonpas/FERI-WebApps-Mobile](https://github.com/jonpas/FERI-WebApps-Mobile)
+
 
 ## Applications
 
