@@ -18,3 +18,15 @@ class UserCreateView(generic.CreateView):
     template_name = 'registration/register.html'
     form_class = UserCreationForm
     success_url = reverse_lazy('core:login')
+
+
+class UserUpdateView(generic.UpdateView):
+    template_name = 'registration/update.html'
+    model = User
+    fields = ['username', 'email']
+
+    def get_success_url(self):
+        print(self.object)
+        return reverse_lazy('core:profile', kwargs={
+            'pk': self.object.id,
+        })

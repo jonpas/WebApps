@@ -2,10 +2,25 @@
 
 {% block content %}
 
-<h2>{% block title %}Profile: {{ user.get_username }}{% endblock title %}</h2>
-
 <div class="row">
-  <div class="col">
+  <div class="col-8">
+    <h2>{% block title %}Profile: {{ user.get_username }}{% endblock title %}</h2>
+  </div>
+
+  {% if user.id == request.user.id %}
+  <div class="col-4 text-right mt-auto">
+    <a href="{% url 'core:profile-update' user.id %}">
+      <button type="button" class="btn btn-primary">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-edit"></i></span>
+        Profile
+      </button>
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<div class="row mt-2">
+  <div class="col-sm-5">
     <h4>Doodle</h4>
     <ul>
       <li>Played: {{ user.doodle_profile.played }} <sub><i>(# of drawings)</i></sub></li>
@@ -14,7 +29,7 @@
     </ul>
   </div>
 
-  <div class="col">
+  <div class="col-sm-5">
     <h4>Ludo</h4>
     <ul>
       <li>Played: {{ user.ludo_profile.played }}</li>
@@ -24,6 +39,14 @@
         <li>3rd: {{ user.ludo_profile.thirds }}</li>
         <li>4th: {{ user.ludo_profile.fourths }}</li>
       </ul>
+    </ul>
+  </div>
+
+  <div class="col-sm-5">
+    <h4>Transport</h4>
+    <ul>
+      <li>Carrier: {% if user.transport_profile.carrier %}Yes{% else %}No{% endif %}</li>
+      <li>Passenger: {% if user.transport_profile.passenger %}Yes{% else %}No{% endif %}</li>
     </ul>
   </div>
 </div>

@@ -6,7 +6,7 @@
 {% url 'ludo:index' as ludo_url %}
 {% url 'transport:index' as transport_url %}
 {% url 'admin:index' as admin_url %}
-{% url 'core:profile' user.id as profile_url %}
+{% url 'core:profile' request.user.id as profile_url %}
 {% url 'core:logout' as logout_url %}
 {% url 'core:login' as login_url %}
 {% url 'core:register' as register_url %}
@@ -48,7 +48,7 @@
               <a class="nav-link" href="{{ todo_url }}">Todo</a>
             </li>
 
-            {% if user.is_authenticated %}
+            {% if request.user.is_authenticated %}
             <li class="nav-item {% if doodle_url in request.path %}active{% endif %}">
               <a class="nav-link" href="{{ doodle_url }}">Doodle</a>
             </li>
@@ -62,8 +62,8 @@
           </ul>
 
           <ul class="navbar-nav">
-            {% if user.is_authenticated %}
-            {% if user.is_staff %}
+            {% if request.user.is_authenticated %}
+            {% if request.user.is_staff %}
             <li class="nav-item {% if admin_url in request.path %}active{% endif %}">
               <a class="nav-link font-italic" href="{{ admin_url }}">Administration</a>
             </li>

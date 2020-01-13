@@ -4,3 +4,4 @@ from . import models
 
 
 admin.site.register(models.Transport)
+admin.site.register(models.Profile)
