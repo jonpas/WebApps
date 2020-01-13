@@ -7,7 +7,7 @@ class LudoConfig(AppConfig):
     name = 'ludo'
 
     def ready(self):
-        ignore_args = ['makemigrations', 'migrate']
+        ignore_args = ['makemigrations', 'migrate', 'collectstatic']
         if not [x for x in ignore_args if x in sys.argv]:
             from . import models
 
