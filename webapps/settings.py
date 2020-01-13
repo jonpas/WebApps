@@ -27,7 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost', '127.0.0.1', '[::1]',  # Default when empty
-    'jonpas.eu.pythonanywhere.com',
+    '10.0.2.2',  # Android Emulator
+    'jonpas.eu.pythonanywhere.com',  # PythonAnywhere
 ]
 
 
