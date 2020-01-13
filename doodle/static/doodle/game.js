@@ -15,6 +15,10 @@ canvas.addEventListener('mousemove', moveDraw);
 canvas.addEventListener('mousedown', startDraw);
 canvas.addEventListener('mouseup', stopDraw);
 canvas.addEventListener('mouseout', stopDraw);
+canvas.addEventListener('touchmove', moveDraw);
+canvas.addEventListener('touchstart', startDraw);
+canvas.addEventListener('touchend', stopDraw);
+canvas.addEventListener('touchleave', stopDraw);
 
 function startDraw(e) {
     if (allowDrawing) {
@@ -38,8 +42,10 @@ function moveDraw(e) {
 }
 
 function getMousePosition(e) {
-    var mouseX = e.offsetX * canvas.width / canvas.clientWidth | 0;
-    var mouseY = e.offsetY * canvas.height / canvas.clientHeight | 0;
+    const clientX = e.offsetX || e.touches[0].clientX;
+    const clientY = e.offsetY || e.touches[0].clientY;
+    var mouseX = clientX * canvas.width / canvas.clientWidth | 0;
+    var mouseY = clientY * canvas.height / canvas.clientHeight | 0;
     return {x: mouseX, y: mouseY};
 }
 
