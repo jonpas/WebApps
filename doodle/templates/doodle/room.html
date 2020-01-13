@@ -13,7 +13,7 @@
 
 <div class="row">
   <div class="col-8">
-    <h2>{% block title %}Doodle: {{ room }}{% endblock title %}</h2>
+    <h2>{% block title %}Doodle: {{ room.name }}{% endblock title %}</h2>
   </div>
 
   {% if room.owner.id == user.id %}
@@ -46,7 +46,7 @@
     {% for user in room.users.all %}
     <a href="{% url 'core:profile' user.id %}" id="user-{{ user.id }}">
       <span class="badge badge-success">
-        {{ user.username }}
+        {{ user.get_username }}
       </span>
     </a>
     {% endfor %}

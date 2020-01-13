@@ -126,14 +126,14 @@ class GameConsumer(WebsocketConsumer):
         return {
             'type': 'user_connect',
             'id': self.user.id,
-            'name': self.user.username
+            'name': self.user.get_username()
         }
 
     def msg_user_disconnect(self):
         return {
             'type': 'user_disconnect',
             'id': self.user.id,
-            'name': self.user.username
+            'name': self.user.get_username()
         }
 
     # Game
@@ -144,7 +144,7 @@ class GameConsumer(WebsocketConsumer):
             'type': 'game_start',
             'player': {
                 'id': 0,  # TODO room_model.game.player.id
-                'name': ''  # TODO room_model.game.player.username
+                'name': ''  # TODO room_model.game.player.get_username()
             },
             'timeout': TIMEOUT
         }
@@ -154,7 +154,7 @@ class GameConsumer(WebsocketConsumer):
             'type': 'game_next',
             'winner': {
                 'id': self.user.id,
-                'name': self.user.username
+                'name': self.user.get_username()
             }
         }
 
@@ -168,7 +168,7 @@ class GameConsumer(WebsocketConsumer):
             'type': 'game_timeout',
             'player': {
                 'id': self.user.id,
-                'name': self.user.username
+                'name': self.user.get_username()
             }
         }
 

@@ -220,7 +220,7 @@ class ChatConsumer(WebsocketConsumer):
             'message': message,
             'sender': {
                 'id': self.user.id,
-                'name': self.user.username
+                'name': self.user.get_username()
             }
         }
 
@@ -228,14 +228,14 @@ class ChatConsumer(WebsocketConsumer):
         return {
             'type': 'user_connect',
             'id': self.user.id,
-            'name': self.user.username
+            'name': self.user.get_username()
         }
 
     def msg_user_disconnect(self):
         return {
             'type': 'user_disconnect',
             'id': self.user.id,
-            'name': self.user.username
+            'name': self.user.get_username()
         }
 
     # Drawing
@@ -258,7 +258,7 @@ class ChatConsumer(WebsocketConsumer):
             'draw': False,
             'player': {
                 'id': room_model.game.player.id,
-                'name': room_model.game.player.username
+                'name': room_model.game.player.get_username()
             },
             'timeout': TIMEOUT
         }
@@ -272,7 +272,7 @@ class ChatConsumer(WebsocketConsumer):
             'guessed': guessed,
             'winner': {
                 'id': self.user.id,
-                'name': self.user.username
+                'name': self.user.get_username()
             } if guessed else None
         }
 
@@ -286,7 +286,7 @@ class ChatConsumer(WebsocketConsumer):
             'type': 'game_timeout',
             'player': {
                 'id': self.user.id,
-                'name': self.user.username
+                'name': self.user.get_username()
             }
         }
 

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2>{% block title %}Profile: {{ user.username }}{% endblock title %}</h2>
+<h2>{% block title %}Profile: {{ user.get_username }}{% endblock title %}</h2>
 
 <div class="row">
   <div class="col">
