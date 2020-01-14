@@ -3,3 +3,111 @@
     height: 100%;
     resize: none;
 }
+
+/* Board */
+#board {
+    margin: 0 auto;
+    font-size: 1rem;
+}
+
+.board-row {
+    display: flex;
+}
+
+.board-box {
+    color: black;
+    font-weight: bold;
+    flex: 1 0 auto;
+    position: relative;
+}
+
+.board-box:after {
+    content: "";
+    float: left;
+    display: block;
+    padding-top: 100%;
+}
+
+.board-cell {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    z-index: 1;
+}
+
+.board-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    text-align: center;
+    line-height: 275%;
+    width: 80%;
+    height: 80%;
+    margin: 10%;
+    border-radius: 50%;
+    z-index: 2;
+    opacity: 1;
+    display: none;
+}
+
+/* Board fields, bases, entrances and homes */
+[id^="f-"] {
+    background-color: white;
+}
+[id^="b-blue-"], [id^="h-blue-"] {
+    background-color: lightblue;
+}
+[id^="b-red-"], [id^="h-red-"] {
+    background-color: lightpink;
+}
+[id^="b-green-"], [id^="h-green-"] {
+    background-color: lightgreen;
+}
+[id^="b-yellow-"], [id^="h-yellow-"] {
+    background-color: khaki;
+}
+
+[id^="e-"] {
+    font-size: 2rem;
+}
+#e-blue {
+    color: blue;
+}
+#e-red {
+    color: red;
+}
+#e-green {
+    color: green;
+}
+#e-yellow {
+    color: gold;
+}
+
+.board-overlay[id^="t-blue-"] {
+    background-color: blue;
+    display: block;
+}
+
+.board-overlay[id^="t-red-"] {
+    background-color: red;
+    display: block;
+}
+
+.board-overlay[id^="t-green-"] {
+    background-color: green;
+    display: block;
+}
+
+.board-overlay[id^="t-yellow-"] {
+    background-color: gold;
+    display: block;
+}
