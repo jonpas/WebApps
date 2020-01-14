@@ -7,7 +7,7 @@
 /* Board */
 #board {
     margin: 0 auto;
-    font-size: 1rem;
+    font-size: 0.8em;
     transition-property: background-color;
     transition-duration: 1s;
 }
@@ -17,7 +17,7 @@
 }
 
 .board-box {
-    color: black;
+    color: rgba(0, 0, 0, 0.5);
     font-weight: bold;
     flex: 1 0 auto;
     position: relative;
@@ -49,16 +49,15 @@
     bottom: 0;
     left: 0;
     right: 0;
-    display: flex;
-    text-align: center;
-    line-height: 275%;
+    display: none;
+    align-items: center;
+    justify-content: center;
     width: 80%;
     height: 80%;
     margin: 10%;
     border-radius: 50%;
     z-index: 2;
-    opacity: 1;
-    display: none;
+    color: rgba(0, 0, 0, 1);
 }
 
 /* Board fields, bases, entrances and homes */
@@ -79,7 +78,7 @@
 }
 
 [id^="e-"] {
-    font-size: 2rem;
+    font-size: 1em;
 }
 #e-blue {
     color: blue;
@@ -96,20 +95,20 @@
 
 .board-overlay[id^="t-blue-"] {
     background-color: blue;
-    display: block;
+    display: flex;
 }
 
 .board-overlay[id^="t-red-"] {
     background-color: red;
-    display: block;
+    display: flex;
 }
 
 .board-overlay[id^="t-green-"] {
     background-color: green;
-    display: block;
+    display: flex;
 }
 
 .board-overlay[id^="t-yellow-"] {
     background-color: gold;
-    display: block;
+    display: flex;
 }
