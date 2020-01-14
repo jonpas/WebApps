@@ -1,11 +1,11 @@
 // Handle Todo checkbox change
 $('[id*="task-"]').change(function() {
-    var task = $(this).closest('li');
-    var reminder = $('#remind-' + this.id);
-    var id = this.id.substring(this.id.indexOf('-') + 1, this.id.length);
+    const task = $(this).closest('li');
+    const reminder = $('#remind-' + this.id);
+    const id = this.id.substring(this.id.indexOf('-') + 1, this.id.length);
 
     // Update database
-    var xhttp = new XMLHttpRequest();
+    const xhttp = new XMLHttpRequest();
     xhttp.open('POST', 'tasks/' + id + '/complete/', true);
     xhttp.setRequestHeader('X-CSRFToken', Cookies.get('csrftoken'));
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

@@ -1,18 +1,18 @@
-let roomID = JSON.parse(document.getElementById('room-id').textContent);
+const roomID = JSON.parse(document.getElementById('room-id').textContent);
 let timeout = null;
 
 // Initialize messaging
-let chatSocket = new WebSocket(
+const chatSocket = new WebSocket(
     'ws://' + window.location.host +
     '/ws/doodle/' + roomID + '/');
 
 chatSocket.onmessage = function(e) {
-    let chatLog = document.getElementById('chat-log');
-    let data = JSON.parse(e.data);
-    let msgtype = data['type'];
+    const chatLog = document.getElementById('chat-log');
+    const data = JSON.parse(e.data);
+    const msgtype = data['type'];
 
     if (msgtype == 'chat') {
-        let sender = data['sender']['name'];
+        const sender = data['sender']['name'];
         logMessage(sender, data['message']);
     } else if (msgtype == 'draw') {
         draw(data['from'], data['to']);
@@ -23,7 +23,7 @@ chatSocket.onmessage = function(e) {
     } else if (msgtype == 'game_ready') {
         allowStart(data['ready']);
     } else if (msgtype == 'game_start') {
-        let player = data['player']['name'];
+        const player = data['player']['name'];
         if (data['draw']) {
             allowDraw(true);
             logMessage('GAME', 'You are drawing a \'' + data['word'] + '\'!');
@@ -35,9 +35,9 @@ chatSocket.onmessage = function(e) {
             clearTimeout(timeout);
         }
     } else if (msgtype == 'game_next') {
-        let word = data['word'];
+        const word = data['word'];
         if (data['guessed']) {
-            let winner = data['winner']['name'];
+            const winner = data['winner']['name'];
             logMessage('GAME', '\'' + winner + '\' guessed \'' + word + '\'!');
             playWinEffects();
         } else {
@@ -49,7 +49,7 @@ chatSocket.onmessage = function(e) {
         logMessage('GAME', 'Finished!');
         clearTimeout(timeout);
     } else if (msgtype == 'game_timeout') {
-        let player = data['player']['name'];
+        const player = data['player']['name'];
         logMessage('GAME', '\'' + player + '\' timed out!');
     }
 };
@@ -66,7 +66,7 @@ document.getElementById('chat-input').onkeyup = function(e) {
 };
 
 document.getElementById('chat-submit').onclick = function(e) {
-    let messageInputDom = document.getElementById('chat-input');
+    const messageInputDom = document.getElementById('chat-input');
     let message = messageInputDom.value;
 
     chatSocket.send(JSON.stringify({
@@ -78,16 +78,16 @@ document.getElementById('chat-submit').onclick = function(e) {
 };
 
 function logMessage(sender, message) {
-    let chatLog = document.getElementById('chat-log');
+    const chatLog = document.getElementById('chat-log');
     chatLog.value += ('[' + sender + '] ' + message + '\n');
     chatLog.scrollTop = chatLog.scrollHeight;
 }
 
 // Members
 function addUser(id, name) {
-    let userExists = document.getElementById('user-' + id);
+    const userExists = document.getElementById('user-' + id);
     if (userExists === null) {
-        let userList = document.getElementById('user-list');
+        const userList = document.getElementById('user-list');
 
         let userNode = document.createElement('a');
         userNode.setAttribute('href', '/accounts/' + id);
@@ -107,7 +107,7 @@ function addUser(id, name) {
 }
 
 function removeUser(id, name) {
-    let userNode = document.getElementById('user-' + id);
+    const userNode = document.getElementById('user-' + id);
     userNode.parentNode.removeChild(userNode); // Browser compatibility
     logMessage('ROOM', '\'' + name + '\' left!');
 }

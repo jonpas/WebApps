@@ -1,5 +1,5 @@
-let canvas = document.getElementById('canvas');
-let ctx = canvas.getContext('2d');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 let allowDrawing = true;
 let drawing = false;
 let prevMousePos = {x: 0, y: 0};
@@ -23,7 +23,7 @@ canvas.addEventListener('touchleave', stopDraw);
 function startDraw(e) {
     if (allowDrawing) {
         drawing = true;
-        let curMousePos = getMousePosition(e);
+        const curMousePos = getMousePosition(e);
         sendDraw({x: curMousePos.x - 1, y: curMousePos.y - 1}, curMousePos);
         prevMousePos = curMousePos;
     }
@@ -35,7 +35,7 @@ function stopDraw(e) {
 
 function moveDraw(e) {
     if (drawing && allowDrawing) {
-        let curMousePos = getMousePosition(e);
+        const curMousePos = getMousePosition(e);
         sendDraw(prevMousePos, curMousePos);
         prevMousePos = curMousePos;
     }
@@ -44,8 +44,8 @@ function moveDraw(e) {
 function getMousePosition(e) {
     const clientX = e.offsetX || e.touches[0].clientX;
     const clientY = e.offsetY || e.touches[0].clientY;
-    var mouseX = clientX * canvas.width / canvas.clientWidth | 0;
-    var mouseY = clientY * canvas.height / canvas.clientHeight | 0;
+    const mouseX = clientX * canvas.width / canvas.clientWidth | 0;
+    const mouseY = clientY * canvas.height / canvas.clientHeight | 0;
     return {x: mouseX, y: mouseY};
 }
 
@@ -65,7 +65,7 @@ function erase() {
 
 // Game
 function allowStart(allow) {
-    let startButton = document.getElementById('start-button');
+    const startButton = document.getElementById('start-button');
     if (allow) {
         startButton.classList.remove('disabled');
     } else {
@@ -80,7 +80,7 @@ function allowDraw(allow) {
 
 function playWinEffects() {
     // Sound effect
-    let audio = document.getElementById('audio-win');
+    const audio = document.getElementById('audio-win');
     audio.play();
 
     // Animation
