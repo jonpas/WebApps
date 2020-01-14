@@ -29,6 +29,31 @@
 </div>
 
 <div class="row mt-2">
+  <div class="col-8">
+    <button type="button" class="btn btn-primary" id="roll-button">
+      <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-soccer-ball-o"></i></span>
+      Roll
+    </button>
+    {% for i in '1234'|make_list %}
+    <button type="button" class="btn btn-primary disabled" id="move-t{{ forloop.counter }}-button">
+      <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-share"></i></span>
+      Move {{ forloop.counter }}
+    </button>
+    {% endfor %}
+  </div>
+
+  <div class="col-4 text-right my-auto" id="user-list">
+    {% for user in room.users.all %}
+    <a href="{% url 'core:profile' user.id %}" id="user-{{ user.id }}">
+      <span class="badge badge-success">
+        {{ user.get_username }}
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="row pt-2">
   <div class="col-8 pr-0" id="board">
     <div class="board-row">
       <div class="board-box" id="b-blue-1">
@@ -393,19 +418,6 @@
   <div class="col-4">
     <textarea class="form-control" id="log" readonly autocomplete="off"></textarea>
   </div>
-</div>
-
-<div class="row pt-2">
-  <div class="col text-right" id="user-list">
-    {% for user in room.users.all %}
-    <a href="{% url 'core:profile' user.id %}" id="user-{{ user.id }}">
-      <span class="badge badge-success">
-        {{ user.get_username }}
-      </span>
-    </a>
-    {% endfor %}
-  </div>
-
 </div>
 
 {% endblock content %}

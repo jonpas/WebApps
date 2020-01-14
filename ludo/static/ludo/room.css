@@ -8,6 +8,8 @@
 #board {
     margin: 0 auto;
     font-size: 1rem;
+    transition-property: background-color;
+    transition-duration: 1s;
 }
 
 .board-row {

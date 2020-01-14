@@ -10,13 +10,12 @@ function prepareBoard() {
     for (const color of colors) {
         for (let i = 1; i <= 4; i++) {
             const base = document.getElementById('b-' + color + '-' + i);
-            getOverlay(base).id = 't-' + color + '-' + i;
-            getOverlay(base).innerHTML = color.charAt(0).toUpperCase() + i;
+            placeToken(color, i);
         }
     }
+}
 
-    return;
-
+function updateBoard() {
     // Base
     for (const color of colors) {
         for (let i = 1; i <= 4; i++) {
@@ -51,15 +50,37 @@ function prepareBoard() {
     }
 }
 
-function updateBoard() {
-
-}
-
 function resetBoard() {
     const overlays = document.getElementsByClassName('board-overlay');
     for (const overlay of overlays) {
         overlay.id = '';
     }
+}
+
+function placeToken(color, i) {
+    const overlay = getOverlay(document.getElementById('b-' + color + '-' + i));
+    overlay.id = 't-' + color + '-' + i;
+    overlay.innerHTML = color.charAt(0).toUpperCase() + i;
+}
+
+function moveToken(from, to) {
+    let boxFrom = document.getElementById(from);
+    let boxTo = document.getElementById(to);
+
+    if (from.startsWith('e-')) {
+        boxFrom = boxFrom.parentNode;
+    }
+    if (to.startsWith('e-')) {
+        boxTo = boxTo.parentNode;
+    }
+
+    const overlayFrom = getOverlay(boxFrom);
+    const overlayTo = getOverlay(boxTo);
+
+    overlayTo.id = overlayFrom.id;
+    overlayTo.innerHTML = overlayFrom.innerHTML;
+    overlayFrom.id = '';
+    overlayFrom.innerHTML = '';
 }
 
 // Board Helpers
@@ -78,16 +99,24 @@ function startGame() {
     prepareBoard();
 }
 
+function playRollEffects() {
+    // Sound effect
+    let audio = document.getElementById('audio-roll');
+    audio.play();
+
+    // TODO Animation
+}
+
 function playWinEffects() {
     // Sound effect
     let audio = document.getElementById('audio-win');
     audio.play();
 
-    // TODO Animation
-    //canvas.style.backgroundColor = 'green';
+    // Animation
+    board.style.backgroundColor = 'green';
 
-    // TODO Restore animation
+    // Restore animation
     setTimeout(function() {
-        //canvas.style.backgroundColor = 'white';
+        board.style.backgroundColor = 'transparent';
     }, 1000);
 }
