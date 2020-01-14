@@ -15,4 +15,4 @@ class LudoConfig(AppConfig):
             for room in models.Room.objects.all():
                 room.users.clear()
 
-            # TODO models.Game.objects.all().delete()
+            models.Game.objects.all().delete()

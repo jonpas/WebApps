@@ -1,51 +1,39 @@
 const board = document.getElementById('board');
 const colors = ['blue', 'red', 'green', 'yellow'];
 
-prepareBoard();
-//resetBoard();
-
 // Board
-function prepareBoard() {
-    // Tokens in bases
+function updateBoard(state) {
+    // Bases
     for (const color of colors) {
-        for (let i = 1; i <= 4; i++) {
-            const base = document.getElementById('b-' + color + '-' + i);
-            placeToken(color, i);
+        for (let i = 0; i < 4; i++) {
+            if (state['bases'][color][i] !== null) {
+                const token = getToken(state['bases'][color][i]);
+                placeToken(token.color, token.i, getLocation('b', token.color, i + 1));
+            } else {
+                clearLocation(getLocation('b', color, i + 1));
+            }
         }
     }
-}
 
-function updateBoard() {
-    // Base
+    // Homes
     for (const color of colors) {
-        for (let i = 1; i <= 4; i++) {
-            const base = document.getElementById('b-' + color + '-' + i);
-            base.firstChild.innerHTML = 'test';
+        for (let i = 0; i < 4; i++) {
+            if (state['homes'][color][i] !== null) {
+                const token = getToken(state['homes'][color][i]);
+                placeToken(token.color, token.i, getLocation('h', token.color, i + 1));
+            } else {
+                clearLocation(getLocation('h', color, i + 1));
+            }
         }
     }
 
     // Fields
-    for (let i = 1; i <= 40; i++) {
-        const field = document.getElementById('f-' + i);
-        if (field.firstChild.id === '') {
-            field.firstChild.innerHTML = 'test';
+    for (let i = 0; i < 40; i++) {
+        if (state['fields'][i] !== null) {
+            const token = getToken(state['fields'][i]);
+            placeToken(token.color, token.i, getLocation('f', '', i + 1));
         } else {
-            // Entrance
-            field.firstChild.innerHTML = 'E';
-        }
-    }
-
-    // Entrances
-    /*for (const color of colors) {
-        const entrance = document.getElementById('e-' + color);
-        entrance.innerHTML = 'e';
-    }*/
-
-    // Homes
-    for (const color of colors) {
-        for (let i = 1; i <= 4; i++) {
-            const home = document.getElementById('h-' + color + '-' + i);
-            home.firstChild.innerHTML = 'H' + home.id.charAt(home.id.length - 1);
+            clearLocation(getLocation('f', '', i + 1));
         }
     }
 }
@@ -57,36 +45,22 @@ function resetBoard() {
     }
 }
 
-function placeToken(color, i) {
-    const overlay = getOverlay(document.getElementById('b-' + color + '-' + i));
+function placeToken(color, i, location) {
+    const overlay = getOverlay(location);
     overlay.id = 't-' + color + '-' + i;
     overlay.innerHTML = color.charAt(0).toUpperCase() + i;
 }
 
-function moveToken(from, to) {
-    let boxFrom = document.getElementById(from);
-    let boxTo = document.getElementById(to);
-
-    if (from.startsWith('e-')) {
-        boxFrom = boxFrom.parentNode;
-    }
-    if (to.startsWith('e-')) {
-        boxTo = boxTo.parentNode;
-    }
-
-    const overlayFrom = getOverlay(boxFrom);
-    const overlayTo = getOverlay(boxTo);
-
-    overlayTo.id = overlayFrom.id;
-    overlayTo.innerHTML = overlayFrom.innerHTML;
-    overlayFrom.id = '';
-    overlayFrom.innerHTML = '';
+function removeToken(color, i) {
+    const overlay = document.getElementById('t-' + color + '-' + i);
+    overlay.id = '';
+    overlay.innerHTML = '';
 }
 
-// Board Helpers
-function getCell(element) {
-    // Cell is always first child
-    return element.children[0];
+function clearLocation(location) {
+    const overlay = getOverlay(location);
+    overlay.id = '';
+    overlay.innerHTML = '';
 }
 
 function getOverlay(element) {
@@ -94,14 +68,55 @@ function getOverlay(element) {
     return element.children[1];
 }
 
+function getLocation(type, color, index) {
+    if (type === 'f') {
+        return document.getElementById(type + '-' + index);
+    } else {
+        return document.getElementById(type + '-' + color + '-' + index);
+    }
+}
+
+function getToken(name) {
+    const tokenVars = name.split('-');
+    return {
+        color: tokenVars[0],
+        i: tokenVars[1]
+    }
+}
+
 // Game
-function startGame() {
-    prepareBoard();
+function allowStart(allow) {
+    const startButton = document.getElementById('start-button');
+    if (allow) {
+        startButton.classList.remove('disabled');
+    } else {
+        startButton.classList.add('disabled');
+    }
+}
+
+function toggleActions(allowedActions) {
+    const actions = ['roll', 'move-1', 'move-2', 'move-3', 'move-4'];
+    for (const action of actions) {
+        const button = document.getElementById(action + '-button');
+        if (allowedActions.includes(action)) {
+            button.classList.remove('disabled');
+        } else {
+            button.classList.add('disabled');
+        }
+    }
 }
 
 function playRollEffects() {
     // Sound effect
-    let audio = document.getElementById('audio-roll');
+    const audio = document.getElementById('audio-roll');
+    // TODO audio.play();
+
+    // TODO Animation
+}
+
+function playKnockEffects() {
+    // Sound effect
+    const audio = document.getElementById('audio-knock');
     audio.play();
 
     // TODO Animation
@@ -109,8 +124,8 @@ function playRollEffects() {
 
 function playWinEffects() {
     // Sound effect
-    let audio = document.getElementById('audio-win');
-    audio.play();
+    const audio = document.getElementById('audio-win');
+    // TODO audio.play();
 
     // Animation
     board.style.backgroundColor = 'green';

@@ -67,7 +67,7 @@ document.getElementById('chat-input').onkeyup = function(e) {
 
 document.getElementById('chat-submit').onclick = function(e) {
     const messageInputDom = document.getElementById('chat-input');
-    let message = messageInputDom.value;
+    const message = messageInputDom.value;
 
     chatSocket.send(JSON.stringify({
         'type': 'chat',
@@ -89,14 +89,14 @@ function addUser(id, name) {
     if (userExists === null) {
         const userList = document.getElementById('user-list');
 
-        let userNode = document.createElement('a');
+        const userNode = document.createElement('a');
         userNode.setAttribute('href', '/accounts/' + id);
         userNode.setAttribute('id', 'user-' + id);
 
-        let userBadge = document.createElement('span');
+        const userBadge = document.createElement('span');
         userBadge.setAttribute('class', 'badge badge-success');
 
-        let userName = document.createTextNode(name);
+        const userName = document.createTextNode(name);
 
         userList.appendChild(userNode);
         userNode.appendChild(userBadge);

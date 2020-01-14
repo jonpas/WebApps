@@ -1,13 +1,16 @@
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from django.db.models import F
+from django.contrib.auth.models import User
 
 import json
+import random
 
 from . import models
 
-MIN_CLIENTS = 2
-REQ_CLIENTS = 4
-TIMEOUT = 60  # Seconds
+MIN_CLIENTS = 1
+MAX_CLIENTS = 4
+TIMEOUT = 180  # Seconds
 
 
 class GameConsumer(WebsocketConsumer):
@@ -16,17 +19,25 @@ class GameConsumer(WebsocketConsumer):
         self.user = self.scope['user']
 
         self.room_group_name = f'ludo_{self.room_id}'
+        self.room_owner_group_name = f'ludo_{self.room_id}_owner'
         self.room_user_group_stub = f'ludo_{self.room_id}_user_'
 
         # Only connect if room not full
         room_model = self.get_room_model()
-        if room_model.users.count() < REQ_CLIENTS:
+        if room_model.users.count() < MAX_CLIENTS:
             # Join room group
             async_to_sync(self.channel_layer.group_add)(
                 self.room_group_name,
                 self.channel_name
             )
             room_model.users.add(self.user)
+
+            # Join single-user owner group
+            if room_model.owner.id == self.user.id:
+                async_to_sync(self.channel_layer.group_add)(
+                    self.room_owner_group_name,
+                    self.channel_name
+                )
 
             # Join single-user user group
             async_to_sync(self.channel_layer.group_add)(
@@ -39,10 +50,13 @@ class GameConsumer(WebsocketConsumer):
             # Notify room about new user
             self.send_all(self.msg_user_connect())
 
-            # Start new game if enough clients connected
+            # Notify owner if game ready to start (enough clients connected)
+            # or automatically start game if max clients connected
             user_count = room_model.users.count()
-            if user_count >= REQ_CLIENTS:
+            if user_count >= MAX_CLIENTS:
                 self.start_game()
+            elif user_count >= MIN_CLIENTS:
+                self.send_owner(self.msg_game_ready(ready=True))
         else:
             self.close()
 
@@ -59,31 +73,46 @@ class GameConsumer(WebsocketConsumer):
         self.send_all(self.msg_user_disconnect())
 
         # Move to next player if current one disconnected (disqualify)
-        # user_count = room_model.users.count()
-        # if room_model.game:
-        #     if user_count < MIN_CLIENTS:
-        #         self.end_game()
-        #     elif room_model.game.player.id == self.user.id:
-        #         self.next_game(timeout=True)
+        user_count = room_model.users.count()
+        if room_model.game:
+            if user_count < MIN_CLIENTS:
+                self.end_game()
+            elif room_model.game.player.id == self.user.id:
+                self.turn_game(timeout=True)
+        else:
+            # Notify owner if game not ready to start (not enough clients connected)
+            user_count = room_model.users.count()
+            if user_count < MIN_CLIENTS:
+                self.send_owner(self.msg_game_ready(ready=False))
 
     # Receive message from WebSocket
     def receive(self, text_data):
         data_json = json.loads(text_data)
         msgtype = data_json['type']
 
-        # TODO
-
         if msgtype == 'game_start':
             self.start_game()
 
+        elif msgtype == 'game_roll':
+            self.roll_game()
+
+        elif msgtype == 'game_turn':
+            self.turn_game(move=data_json['move'])
+
         elif msgtype == 'game_timeout':
             self.send_all(self.msg_game_timeout())
-            self.next_game(timeout=True)
+            self.turn_game(timeout=True)
 
     # Send target helpers
     def send_all(self, data):
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
+            data
+        )
+
+    def send_owner(self, data):
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_owner_group_name,
             data
         )
 
@@ -99,27 +128,144 @@ class GameConsumer(WebsocketConsumer):
 
     # Game control
     def start_game(self, player=None):
-        # TODO
-        # Send game start to all
+        room_model = self.get_room_model()
+        players = room_model.users.all()
+        total_players = len(players)
+
+        # Initialize board JSON
+        state = {
+            'bases': {
+                'blue': ['blue-1', 'blue-2', 'blue-3', 'blue-4'],
+                'red': ['red-1', 'red-2', 'red-3', 'red-4'] if total_players > 1 else [None] * 4,
+                'green': ['green-1', 'green-2', 'green-3', 'green-4'] if total_players > 2 else [None] * 4,
+                'yellow': ['yellow-1', 'yellow-2', 'yellow-3', 'yellow-4'] if total_players > 3 else [None] * 4
+            },
+            'homes': {
+                'blue': [None] * 4,
+                'red': [None] * 4,
+                'green': [None] * 4,
+                'yellow': [None] * 4
+            },
+            'fields': [None] * 40
+        }
+
+        # Initialize game
+        room_model.game = models.Game.objects.create(
+            state=state,
+            rolls={}
+        )
+        room_model.game.players.set(players)
+        room_model.save()
+
+        # Send game start to all and unready to owner
         self.send_all(self.msg_game_start())
+        self.send_owner(self.msg_game_ready(ready=False))
 
-    def next_game(self, guessed=False, timeout=False):
-        # TODO
+    def roll_game(self):
+        roll = random.randint(1, 6)
+
+        room_model = self.get_room_model()
+        room_model.game.rolls[f'{self.user.id}'] = roll
+        room_model.game.save()
+
+        self.send_all(self.msg_game_roll(roll=roll))
+
+        # Check if pre-turn
+        # Everyone throws once, highest starts (last highest if multiple) if pre-turn
+        rolls = room_model.game.rolls
+        if len(rolls) == room_model.game.players.count():
+            # Start first turn if all rolled or get available actions and continue turn
+            if not room_model.game.player:
+                # Set highest roller as first player
+                max_id = int(max(rolls))
+                room_model.game.player = User.objects.get(id=max_id)
+                room_model.game.save()
+
+                # Can only roll first time
+                self.send_all(self.msg_game_turn(['roll']))
+            else:
+                actions = room_model.game.available_actions()
+                self.send_all(self.msg_game_turn(actions))
+
+    def turn_game(self, move=None, timeout=False):
+        room_model = self.get_room_model()
+
         if not timeout:
-            self.send_all(self.msg_game_next(guessed))
+            # Apply move
+            room_model.game.move(move)
 
-        self.end_game()
+        # Check if player finished the game
+        total_players = room_model.game.players.count()
+        current_players = total_players - room_model.game.players_played.count()
+        player = room_model.game.player
+        color = room_model.game.color()
+
+        if None not in room_model.game.state['homes'][color]:
+            # Update statistics and message everyone about player finishing
+            if current_players >= total_players:
+                models.Profile.objects.filter(id=player.id).update(
+                    wins=F('wins') + 1
+                )
+                self.send_all(self.msg_game_player_finish(player=player, position=1))
+            elif current_players >= total_players - 1:
+                models.Profile.objects.filter(id=player.id).update(
+                    seconds=F('seconds') + 1
+                )
+                self.send_all(self.msg_game_player_finish(player=player, position=2))
+            elif current_players >= total_players - 2:
+                models.Profile.objects.filter(id=player.id).update(
+                    thirds=F('thirds') + 1
+                )
+                self.send_all(self.msg_game_player_finish(player=player, position=3))
+            elif current_players >= total_players - 3:
+                models.Profile.objects.filter(id=player.id).update(
+                    fourths=F('fourths') + 1
+                )
+                self.send_all(self.msg_game_player_finish(player=player, position=4))
+
+            room_model.game.players_played.add(player)
+
+        # Continue to next turn if players still playing or end game if all finished
+        if room_model.game.players_played.count() < total_players:
+            actions = []
+
+            # Set next player or allow another roll/turn on 6
+            if room_model.game.rolls[f'{self.user.id}'] == 6:
+                actions = ['roll']
+            else:
+                # Find next player in players field and not in played list
+                remaining_players = [x for x in room_model.game.players.all()
+                                     if x not in room_model.game.players_played.all()]
+
+                player_index = remaining_players.index(player)
+                new_player = remaining_players[0]
+                if player_index + 1 < len(remaining_players):
+                    new_player = remaining_players[player_index + 1]
+
+                room_model.game.player = new_player
+                room_model.game.save()
+
+                actions = room_model.game.available_actions()
+
+            self.send_all(self.msg_game_turn(actions))
+        else:
+            self.end_game()
 
     def end_game(self):
-        # TODO
+        # Cleanup
         room_model = self.get_room_model()
+        room_model.game.delete()
 
         self.send_all(self.msg_game_end())
 
-        # Start new game if enough clients present
+        # Start new game if enough clients present or mark readiness for owner
         user_count = room_model.users.count()
-        if user_count >= REQ_CLIENTS:
+        if user_count >= MAX_CLIENTS:
             self.start_game()
+        elif user_count >= MIN_CLIENTS:
+            self.send_owner(self.msg_game_ready(ready=True))
+        else:
+            self.send_owner(self.msg_game_ready(ready=False))
 
     # Server message creators
     def msg_user_connect(self):
@@ -137,25 +283,54 @@ class GameConsumer(WebsocketConsumer):
         }
 
     # Game
+    def msg_game_ready(self, ready):
+        return {
+            'type': 'game_ready',
+            'ready': ready
+        }
+
     def msg_game_start(self):
-        # room_model = self.get_room_model()
+        room_model = self.get_room_model()
 
         return {
             'type': 'game_start',
+            'actions': ['roll'],
+            'state': room_model.game.state,
+            'timeout': TIMEOUT
+        }
+
+    def msg_game_roll(self, roll):
+        return {
+            'type': 'game_roll',
             'player': {
-                'id': 0,  # TODO room_model.game.player.id
-                'name': ''  # TODO room_model.game.player.get_username()
+                'id': self.user.id,
+                'name': self.user.get_username()
+            },
+            'roll': roll
+        }
+
+    def msg_game_turn(self, actions):
+        room_model = self.get_room_model()
+
+        return {
+            'type': 'game_turn',
+            'actions': actions,
+            'state': room_model.game.state,
+            'player': {
+                'id': room_model.game.player.id,
+                'name': room_model.game.player.get_username()
             },
             'timeout': TIMEOUT
         }
 
-    def msg_game_next(self, winner):
+    def msg_game_player_finish(self, player, position):
         return {
-            'type': 'game_next',
-            'winner': {
-                'id': self.user.id,
-                'name': self.user.get_username()
-            }
+            'type': 'game_player_finish',
+            'finish': {
+                'id': player.id,
+                'name': player.get_username()
+            },
+            'position': position
         }
 
     def msg_game_end(self):
@@ -180,10 +355,33 @@ class GameConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps(event))
 
     # Game
+    def game_ready(self, event):
+        self.send(text_data=json.dumps(event))
+
     def game_start(self, event):
         self.send(text_data=json.dumps(event))
 
-    def game_next(self, event):
+    def game_roll(self, event):
+        is_player = event['player']['id'] == self.user.id
+
+        self.send(text_data=json.dumps({
+            'type': event['type'],
+            'player': event['player'],
+            'roll': event['roll'],
+            'rolled': is_player
+        }))
+
+    def game_turn(self, event):
+        is_player = event['player']['id'] == self.user.id
+
+        self.send(text_data=json.dumps({
+            'type': event['type'],
+            'actions': event['actions'] if is_player else [],
+            'player': event['player'],
+            'timeout': event['timeout']
+        }))
+
+    def game_player_finish(self, event):
         self.send(text_data=json.dumps(event))
 
     def game_end(self, event):

@@ -52,6 +52,7 @@ class ChatConsumer(WebsocketConsumer):
             self.send_all(self.msg_user_connect())
 
             # Notify owner if game ready to start (enough clients connected)
+            # or automatically start game if max clients connected
             user_count = room_model.users.count()
             if user_count >= MAX_CLIENTS:
                 self.start_game()
@@ -203,7 +204,7 @@ class ChatConsumer(WebsocketConsumer):
 
         self.send_all(self.msg_game_end())
 
-        # Start new game or mark readiness for owner
+        # Start new game if enough clients present or mark readiness for owner
         user_count = room_model.users.count()
         if user_count >= MAX_CLIENTS:
             self.start_game()

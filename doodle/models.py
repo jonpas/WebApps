@@ -8,9 +8,9 @@ import random
 
 
 class Game(models.Model):
-    player = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='player')
+    player = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='doodle_player')
     word = models.CharField(max_length=20)
-    players_played = models.ManyToManyField(User, blank=True)
+    players_played = models.ManyToManyField(User, blank=True, related_name='doodle_players')
     start_time = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -24,7 +24,7 @@ class Room(models.Model):
     name = models.CharField(max_length=20)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='doodle_owner')
     users = models.ManyToManyField(User, blank=True, related_name='doodle_users')
-    game = models.ForeignKey(Game, on_delete=models.SET_NULL, blank=True, null=True)
+    game = models.ForeignKey(Game, on_delete=models.SET_NULL, blank=True, null=True, related_name='doodle_game')
 
     def __str__(self):
         return self.name

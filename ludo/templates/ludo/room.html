@@ -7,6 +7,13 @@
 
 {% block content %}
 
+
+<audio id="audio-roll">
+  <source src="{% static 'core/assets/sound_win.mp3' %}" type="audio/mpeg"> <!-- TODO Sound -->
+</audio>
+<audio id="audio-knock">
+  <source src="{% static 'core/assets/sound_win.mp3' %}" type="audio/mpeg"> <!-- TODO Sound -->
+</audio>
 <audio id="audio-win">
   <source src="{% static 'core/assets/sound_win.mp3' %}" type="audio/mpeg">
 </audio>
@@ -18,6 +25,10 @@
 
   {% if room.owner.id == user.id %}
   <div class="col-4 text-right mt-auto">
+    <button type="button" class="btn btn-success disabled" id="start-button">
+      <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-rocket"></i></span>
+      <span class="d-none d-md-inline">Start</span>
+    </button>
     <a href="{% url 'ludo:room-delete' room.id %}">
       <button type="button" class="btn btn-primary">
         <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>
@@ -30,12 +41,12 @@
 
 <div class="row mt-2">
   <div class="col-8">
-    <button type="button" class="btn btn-primary" id="roll-button">
+    <button type="button" class="btn btn-primary disabled" id="roll-button">
       <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-soccer-ball-o"></i></span>
       <span class="d-none d-md-inline">Roll</span>
     </button>
     {% for i in '1234'|make_list %}
-    <button type="button" class="btn btn-primary disabled" id="move-t{{ forloop.counter }}-button">
+    <button type="button" class="btn btn-primary disabled" id="move-{{ forloop.counter }}-button">
       <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-share"></i></span>
       <span class="d-none d-lg-inline">Move </span>{{ forloop.counter }}
     </button>
