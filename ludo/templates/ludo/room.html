@@ -21,7 +21,7 @@
     <a href="{% url 'ludo:room-delete' room.id %}">
       <button type="button" class="btn btn-primary">
         <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>
-        Room
+        <span class="d-none d-md-inline">Room</span>
       </button>
     </a>
   </div>
@@ -32,12 +32,12 @@
   <div class="col-8">
     <button type="button" class="btn btn-primary" id="roll-button">
       <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-soccer-ball-o"></i></span>
-      Roll
+      <span class="d-none d-md-inline">Roll</span>
     </button>
     {% for i in '1234'|make_list %}
     <button type="button" class="btn btn-primary disabled" id="move-t{{ forloop.counter }}-button">
       <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-share"></i></span>
-      Move {{ forloop.counter }}
+      <span class="d-none d-lg-inline">Move </span>{{ forloop.counter }}
     </button>
     {% endfor %}
   </div>

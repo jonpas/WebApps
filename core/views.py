@@ -26,7 +26,6 @@ class UserUpdateView(generic.UpdateView):
     fields = ['username', 'email']
 
     def get_success_url(self):
-        print(self.object)
         return reverse_lazy('core:profile', kwargs={
             'pk': self.object.id,
         })

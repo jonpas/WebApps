@@ -20,12 +20,12 @@
   <div class="col-4 text-right mt-auto">
     <button type="button" class="btn btn-success disabled" id="start-button">
       <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-rocket"></i></span>
-      Start
+      <span class="d-none d-md-inline">Start</span>
     </button>
     <a href="{% url 'doodle:room-delete' room.id %}">
       <button type="button" class="btn btn-primary">
         <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>
-        Room
+        <span class="d-none d-md-inline">Room</span>
       </button>
     </a>
   </div>

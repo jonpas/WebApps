@@ -12,12 +12,18 @@
   <div class="col-4 text-right mt-auto">
     <button type="button" class="btn btn-success disabled" id="start-button">
       <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-rocket"></i></span>
-      Start
+      <span class="d-none d-md-inline">Start</span>
     </button>
+    <a href="{% url 'transport:update' transport.id %}">
+      <button type="button" class="btn btn-primary">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-edit"></i></span>
+        <span class="d-none d-md-inline">Transport</span>
+      </button>
+    </a>
     <a href="{% url 'transport:delete' transport.id %}">
       <button type="button" class="btn btn-primary">
         <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>
-        Transport
+        <span class="d-none d-md-inline">Transport</span>
       </button>
     </a>
   </div>

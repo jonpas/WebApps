@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.views import generic
 from django.urls import reverse_lazy
 from django import http
@@ -34,6 +34,17 @@ class TransportCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         form.instance.carrier = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('transport:detail', kwargs={
+            'pk': self.object.id,
+        })
+
+
+class TransportUpdateView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'transport/update.html'
+    model = models.Transport
+    fields = []
 
     def get_success_url(self):
         return reverse_lazy('transport:detail', kwargs={
