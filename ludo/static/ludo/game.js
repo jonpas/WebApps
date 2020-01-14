@@ -38,23 +38,10 @@ function updateBoard(state) {
     }
 }
 
-function resetBoard() {
-    const overlays = document.getElementsByClassName('board-overlay');
-    for (const overlay of overlays) {
-        overlay.id = '';
-    }
-}
-
 function placeToken(color, i, location) {
     const overlay = getOverlay(location);
     overlay.id = 't-' + color + '-' + i;
     overlay.innerHTML = color.charAt(0).toUpperCase() + i;
-}
-
-function removeToken(color, i) {
-    const overlay = document.getElementById('t-' + color + '-' + i);
-    overlay.id = '';
-    overlay.innerHTML = '';
 }
 
 function clearLocation(location) {
