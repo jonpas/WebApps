@@ -40,11 +40,26 @@ chatSocket.onmessage = function(e) {
         const allowedActions = data['actions'];
         toggleActions(allowedActions);
 
+        const state = data['state'];
+        updateBoard(state);
+
         const player = data['player']['name'];
-        if (allowedActions.length == 0) {
-            logMessage('GAME', '\'' + player + '\' rolling the die!');
+        if (allowedActions.includes('roll')) {
+            if (allowedActions.length == 0) {
+                logMessage('GAME', '\'' + player + '\' rolling the die!');
+            } else {
+                logMessage('GAME', 'Roll the die!');
+            }
         } else {
-            logMessage('GAME', 'Roll the die!');
+            if (allowedActions.length == 0) {
+                logMessage('GAME', '\'' + player + '\' making a move!');
+            } else {
+                logMessage('GAME', 'Make a move!');
+            }
+        }
+
+        if (data['knock']) {
+            playKnockEffects();
         }
     } else if (msgtype == 'game_player_finish') {
         const finisher = data['finisher']['name'];
@@ -127,7 +142,7 @@ for (let i = 1; i <= 4; i++) {
             toggleActions([]);
             chatSocket.send(JSON.stringify({
                 'type': 'game_turn',
-                'move': i
+                'token': i
             }));
         }
     }

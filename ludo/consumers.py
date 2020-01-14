@@ -97,7 +97,7 @@ class GameConsumer(WebsocketConsumer):
             self.roll_game()
 
         elif msgtype == 'game_turn':
-            self.turn_game(move=data_json['move'])
+            self.turn_game(token=data_json['token'])
 
         elif msgtype == 'game_timeout':
             self.send_all(self.msg_game_timeout())
@@ -177,22 +177,28 @@ class GameConsumer(WebsocketConsumer):
             # Start first turn if all rolled or get available actions and continue turn
             if not room_model.game.player:
                 # Set highest roller as first player
-                max_id = int(max(rolls))
+                max_id = int(max(rolls, key=rolls.get))
                 room_model.game.player = User.objects.get(id=max_id)
                 room_model.game.save()
 
-                # Can only roll first time
+                # Can only roll in pre-turn
                 self.send_all(self.msg_game_turn(['roll']))
             else:
                 actions = room_model.game.available_actions()
-                self.send_all(self.msg_game_turn(actions))
+                if not actions:
+                    # No actions available, move to next player
+                    self.turn_game()
+                else:
+                    self.send_all(self.msg_game_turn(actions))
 
-    def turn_game(self, move=None, timeout=False):
+    def turn_game(self, token=None, timeout=False):
         room_model = self.get_room_model()
 
+        knock = False
         if not timeout:
             # Apply move
-            room_model.game.move(move)
+            knock = room_model.game.move(token)
+            room_model.game.save()
 
         # Check if player finished the game
         total_players = room_model.game.players.count()
@@ -227,12 +233,8 @@ class GameConsumer(WebsocketConsumer):
 
         # Continue to next turn if players still playing or end game if all finished
         if room_model.game.players_played.count() < total_players:
-            actions = []
-
             # Set next player or allow another roll/turn on 6
-            if room_model.game.rolls[f'{self.user.id}'] == 6:
-                actions = ['roll']
-            else:
+            if room_model.game.rolls[f'{self.user.id}'] != 6:
                 # Find next player in players field and not in played list
                 remaining_players = [x for x in room_model.game.players.all()
                                      if x not in room_model.game.players_played.all()]
@@ -245,9 +247,8 @@ class GameConsumer(WebsocketConsumer):
                 room_model.game.player = new_player
                 room_model.game.save()
 
-                actions = room_model.game.available_actions()
-
-            self.send_all(self.msg_game_turn(actions))
+            # Always start turn with a roll
+            self.send_all(self.msg_game_turn(actions=['roll'], knock=knock))
         else:
             self.end_game()
 
@@ -309,7 +310,7 @@ class GameConsumer(WebsocketConsumer):
             'roll': roll
         }
 
-    def msg_game_turn(self, actions):
+    def msg_game_turn(self, actions, knock=False):
         room_model = self.get_room_model()
 
         return {
@@ -320,6 +321,7 @@ class GameConsumer(WebsocketConsumer):
                 'id': room_model.game.player.id,
                 'name': room_model.game.player.get_username()
             },
+            'knock': False,
             'timeout': TIMEOUT
         }
 
@@ -377,7 +379,9 @@ class GameConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({
             'type': event['type'],
             'actions': event['actions'] if is_player else [],
+            'state': event['state'],
             'player': event['player'],
+            'knock': event['knock'],
             'timeout': event['timeout']
         }))
 

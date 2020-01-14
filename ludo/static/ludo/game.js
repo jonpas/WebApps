@@ -111,15 +111,28 @@ function playRollEffects() {
     const audio = document.getElementById('audio-roll');
     // TODO audio.play();
 
-    // TODO Animation
+    // Animation
+    const rollIcon = document.getElementById('roll-icon');
+    rollIcon.classList.add('spin');
+
+    // Restore animation
+    setTimeout(function() {
+        rollIcon.classList.remove('spin');
+    }, 1000);
 }
 
 function playKnockEffects() {
     // Sound effect
     const audio = document.getElementById('audio-knock');
-    audio.play();
+    // TODO audio.play();
 
-    // TODO Animation
+    // Animation
+    board.classList.add('shake');
+
+    // Restore animation
+    setTimeout(function() {
+        board.classList.remove('shake');
+    }, 250);
 }
 
 function playWinEffects() {

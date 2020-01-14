@@ -5,6 +5,8 @@ from django.dispatch import receiver
 
 from jsonfield import JSONField
 
+ENTRANCES = {'blue': 33 - 1, 'red': 3 - 1, 'green': 13 - 1, 'yellow': 23 - 1}
+
 
 class Game(models.Model):
     player = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='ludo_player')
@@ -32,15 +34,48 @@ class Game(models.Model):
         if total_players > 3 and self.player == players[3]:
             return 'yellow'
 
-    def move(self):
-        # TODO Apply move to state
-        pass
+    def move(self, token):
+        color = self.color()
+        strtoken = f'{color}-{token}'
+
+        # Apply move to state
+        # Check in base, move to entrance if found
+        if strtoken in self.state['bases'][color]:
+            self.state['fields'][ENTRANCES[color]] = strtoken
+            self.state['bases'][color][token - 1] = None
+
+        # TODO Move on field
+
+        # TODO Move into home
+
+        # TODO Knock another token
+        knock = False
+
+        return knock
 
     def available_actions(self):
         color = self.color()
-        # TODO Calculate available actions
-        print(f'available_actions: {color}')
-        return ['move-2', 'move-3']
+        roll = self.rolls[f'{self.player.id}']
+
+        actions = []
+
+        # Spawn tokens on 6 if entrance clear
+        if roll == 6 and not self.state['fields'][ENTRANCES[color]]:
+            for strtoken in self.filter(self.state['bases'][color]):
+                token = self.token_index(strtoken)
+                actions.append(f'move-{token}')
+
+        # TODO Move any tokens further up the field
+        # TODO Move any tokens into home or further in home
+
+        print(f'available_actions: {actions}')
+        return actions
+
+    def filter(self, l):
+        return [x for x in l if x]
+
+    def token_index(self, strtoken):
+        return strtoken.split('-')[1]
 
 
 class Room(models.Model):
