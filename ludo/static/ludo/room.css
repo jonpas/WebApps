@@ -4,6 +4,10 @@
     resize: none;
 }
 
+.btn.no-focus:focus {
+    box-shadow: none;
+}
+
 /* Board */
 #board {
     margin: 0 auto;

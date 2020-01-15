@@ -54,3 +54,7 @@ a[aria-expanded=false] .collapse-open {
     pointer-events: none;
     cursor: default;
 }
+
+.btn.no-focus:focus {
+    box-shadow: none;
+}
