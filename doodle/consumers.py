@@ -176,11 +176,11 @@ class ChatConsumer(WebsocketConsumer):
             player_points = int(math.ceil(player_points / 10.0)) * 10
 
             # Add new points (winner is current user, player is drawer)
-            models.Profile.objects.filter(id=self.user.id).update(
+            models.Profile.objects.filter(user=self.user.id).update(
                 wins=F('wins') + 1,
                 points=F('points') + winner_points
             )
-            models.Profile.objects.filter(id=room_model.game.player.id).update(
+            models.Profile.objects.filter(user=room_model.game.player.id).update(
                 played=F('played') + 1,
                 points=F('points') + player_points
             )
