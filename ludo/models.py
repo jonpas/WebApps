@@ -74,7 +74,7 @@ class Game(models.Model):
 
         # Move any tokens further up the field
         for field_index, strtoken in enumerate(self.state['fields']):
-            if strtoken:
+            if strtoken and color == self.token_color(strtoken):
                 move_to = self.field_wrap(field_index + roll)
                 field_to = self.state['fields'][move_to]
                 if not field_to or color not in field_to:
@@ -127,7 +127,10 @@ class Profile(models.Model):
         return f'{self.user.id} Profile (Ludo)'
 
     def __repr__(self):
-        return f'Profile (Ludo) [{self.id}]: played={self.played}, first={self.first}, second={self.second}, third={self.third}, fourth={self.fourth}'
+        return (
+            f'Profile (Ludo) [{self.id}]: played={self.played} (first={self.first},'
+            f'second={self.second}, third={self.third}, fourth={self.fourth})'
+        )
 
     def played(self):
         return self.first + self.second + self.third + self.fourth
