@@ -43,31 +43,39 @@ chatSocket.onmessage = function(e) {
         const state = data['state'];
         updateBoard(state);
 
+        clearTimeout(timeout);
         const player = data['player']['name'];
         if (allowedActions.includes('roll')) {
             if (allowedActions.length == 0) {
                 logMessage('GAME', '\'' + player + '\' rolling the die!');
             } else {
                 logMessage('GAME', 'Roll the die!');
+                timeout = setTimeout(sendTimeout, data['timeout'] * 1000);
             }
         } else {
             if (allowedActions.length == 0) {
                 logMessage('GAME', '\'' + player + '\' making a move!');
             } else {
                 logMessage('GAME', 'Make a move!');
+                timeout = setTimeout(sendTimeout, data['timeout'] * 1000);
             }
         }
 
         if (data['knock']) {
             playKnockEffects();
         }
+
     } else if (msgtype == 'game_player_finish') {
         const finisher = data['finisher']['name'];
         const position = data['position'];
         const positions = ['1st', '2nd', '3rd', '4th'];
-        logMessage('GAME', '\'' + finisher + '\' finished ' + positions[position] + '!');
+        logMessage('GAME', '\'' + finisher + '\' finished ' + positions[position - 1] + '!');
         playWinEffects();
     } else if (msgtype == 'game_end') {
+        const state = data['state'];
+        updateBoard(state);
+
+        logMessage('GAME', 'Finished!');
         toggleActions([]);
         clearTimeout(timeout);
     } else if (msgtype == 'game_timeout') {

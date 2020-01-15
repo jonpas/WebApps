@@ -12,6 +12,9 @@ MIN_CLIENTS = 1
 MAX_CLIENTS = 4
 TIMEOUT = 180  # Seconds
 
+# DEBUG
+ROLL_6 = False
+
 
 class GameConsumer(WebsocketConsumer):
     def connect(self):
@@ -162,7 +165,7 @@ class GameConsumer(WebsocketConsumer):
         self.send_owner(self.msg_game_ready(ready=False))
 
     def roll_game(self):
-        roll = random.randint(1, 6)
+        roll = random.randint(1, 6) if not ROLL_6 else 6
 
         room_model = self.get_room_model()
         room_model.game.rolls[f'{self.user.id}'] = roll
@@ -206,26 +209,26 @@ class GameConsumer(WebsocketConsumer):
         player = room_model.game.player
         color = room_model.game.color()
 
-        if None not in room_model.game.state['homes'][color]:
+        if color and None not in room_model.game.state['homes'][color]:
             # Update statistics and message everyone about player finishing
             if current_players >= total_players:
-                models.Profile.objects.filter(id=player.id).update(
-                    wins=F('wins') + 1
+                models.Profile.objects.filter(user=player.id).update(
+                    first=F('first') + 1
                 )
                 self.send_all(self.msg_game_player_finish(player=player, position=1))
             elif current_players >= total_players - 1:
-                models.Profile.objects.filter(id=player.id).update(
-                    seconds=F('seconds') + 1
+                models.Profile.objects.filter(user=player.id).update(
+                    second=F('second') + 1
                 )
                 self.send_all(self.msg_game_player_finish(player=player, position=2))
             elif current_players >= total_players - 2:
-                models.Profile.objects.filter(id=player.id).update(
-                    thirds=F('thirds') + 1
+                models.Profile.objects.filter(user=player.id).update(
+                    third=F('third') + 1
                 )
                 self.send_all(self.msg_game_player_finish(player=player, position=3))
             elif current_players >= total_players - 3:
-                models.Profile.objects.filter(id=player.id).update(
-                    fourths=F('fourths') + 1
+                models.Profile.objects.filter(user=player.id).update(
+                    fourth=F('fourth') + 1
                 )
                 self.send_all(self.msg_game_player_finish(player=player, position=4))
 
@@ -234,12 +237,12 @@ class GameConsumer(WebsocketConsumer):
         # Continue to next turn if players still playing or end game if all finished
         if room_model.game.players_played.count() < total_players:
             # Set next player or allow another roll/turn on 6
-            if room_model.game.rolls[f'{self.user.id}'] != 6:
+            if room_model.game.rolls.get(f'{self.user.id}', 0) != 6:
                 # Find next player in players field and not in played list
                 remaining_players = [x for x in room_model.game.players.all()
                                      if x not in room_model.game.players_played.all()]
 
-                player_index = remaining_players.index(player)
+                player_index = remaining_players.index(player) if player in remaining_players else 0
                 new_player = remaining_players[0]
                 if player_index + 1 < len(remaining_players):
                     new_player = remaining_players[player_index + 1]
@@ -253,11 +256,12 @@ class GameConsumer(WebsocketConsumer):
             self.end_game()
 
     def end_game(self):
+        # Send end game message with state (before cleanup!)
+        self.send_all(self.msg_game_end())
+
         # Cleanup
         room_model = self.get_room_model()
         room_model.game.delete()
-
-        self.send_all(self.msg_game_end())
 
         # Start new game if enough clients present or mark readiness for owner
         user_count = room_model.users.count()
@@ -328,7 +332,7 @@ class GameConsumer(WebsocketConsumer):
     def msg_game_player_finish(self, player, position):
         return {
             'type': 'game_player_finish',
-            'finish': {
+            'finisher': {
                 'id': player.id,
                 'name': player.get_username()
             },
@@ -336,8 +340,11 @@ class GameConsumer(WebsocketConsumer):
         }
 
     def msg_game_end(self):
+        room_model = self.get_room_model()
+
         return {
-            'type': 'game_end'
+            'type': 'game_end',
+            'state': room_model.game.state
         }
 
     def msg_game_timeout(self):
