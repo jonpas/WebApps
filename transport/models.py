@@ -38,6 +38,7 @@ class Transport(models.Model):
     vehicle_color = models.CharField(max_length=100, blank=True)
     vehicle_registration = models.CharField(max_length=10, blank=True)
     passing_locations = MultiSelectField(max_length=2, choices=Location.choices, blank=True)
+    completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.carrier.get_username()

@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 
 from . import views
 
@@ -6,6 +6,7 @@ app_name = 'transport'
 
 urlpatterns = [
     path('', views.TransportListView.as_view(), name='index'),
+    path('search/', views.TransportFilterView.as_view(), name='search'),
     path('<int:pk>/', views.TransportDetailView.as_view(), name='detail'),
     path('new/', views.TransportCreateView.as_view(), name='create'),
     path('<int:pk>/edit/', views.TransportUpdateView.as_view(), name='update'),

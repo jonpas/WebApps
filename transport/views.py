@@ -1,16 +1,27 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views import generic
 from django.urls import reverse_lazy
 from django import http
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django_filters.views import FilterView
 
 from . import models
 from . import forms
+from . import filters
 
 
 class TransportListView(LoginRequiredMixin, generic.ListView):
     template_name = 'transport/index.html'
     model = models.Transport
+
+    def get_queryset(self):
+        return reversed(self.model.objects.filter(completed=False).order_by('-id')[:15])  # Last 15 published
+
+
+class TransportFilterView(LoginRequiredMixin, FilterView):
+    template_name = 'transport/search.html'
+    model = models.Transport
+    filterset_class = filters.TransportFilter
 
 
 class TransportDetailView(LoginRequiredMixin, generic.DetailView):

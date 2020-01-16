@@ -7,6 +7,12 @@
     <h2>{% block title %}Transports{% endblock title %}</h2>
   </div>
   <div class="col-8 text-right mt-auto">
+    <a href="{% url 'transport:search' %}">
+      <button type="button" class="btn btn-primary">
+        <span class="badge badge-info badge-pill mr-1"><i class="fa fa-search"></i></span>
+        Search
+      </button>
+    </a>
     {% if user.transport_profile.carrier %}
     <a href="{% url 'transport:create' %}">
       <button type="button" class="btn btn-primary">
@@ -20,9 +26,7 @@
 
 <div class="list-group">
   {% for transport in object_list %}
-  <a href="{% url 'transport:detail' transport.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 rounded-0 bg-primary mt-2">
-    <div class="text-left">{{ transport.carrier.get_username }}</div>
-  </a>
+  {% include "transport/list.html" %}
   {% empty %}
   <div class="row mt-5">
     <div class="col">

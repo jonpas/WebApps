@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'channels',
     'crispy_forms',
     'flatpickr',
+    'django_filters',
     'core.apps.CoreConfig',
     'todo.apps.TodoConfig',
     'doodle.apps.DoodleConfig',

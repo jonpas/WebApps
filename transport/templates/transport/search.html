@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h2>{% block title %}Search Transports{% endblock title %}</h2>
+
+<form method="get">
+  {{ filter.form.media }}
+  {{ filter.form|crispy }}
+  <a href="{% url 'transport:index' %}">
+    <button type="button" class="btn btn-primary">Back</button>
+  </a>
+  <button type="submit" class="btn btn-success">Apply</button>
+</form>
+
+<div class="list-group">
+  {% for transport in filter.qs %}
+  {% include "transport/list.html" %}
+  {% empty %}
+  <div class="row mt-5">
+    <div class="col">
+      <h4>No transports available with the given filter!</h4>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock content %}
