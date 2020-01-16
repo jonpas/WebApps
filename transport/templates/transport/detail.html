@@ -8,8 +8,8 @@
     <h2>{% block title %}Transport: {{ transport.carrier.get_username }}{% endblock title %}</h2>
   </div>
 
-  {% if transport.carrier.id == user.id %}
   <div class="col-4 text-right mt-auto">
+    {% if transport.carrier.id == user.id %}
     <button type="button" class="btn btn-success disabled" id="start-button">
       <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-rocket"></i></span>
       <span class="d-none d-md-inline">Start</span>
@@ -26,8 +26,13 @@
         <span class="d-none d-md-inline">Transport</span>
       </button>
     </a>
+    {% elif user.transport_profile.passenger %}
+    <button type="button" class="btn btn-success" id="join-button">
+      <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-car"></i></span>
+      <span class="d-none d-md-inline">Reserve</span>
+    </button>
+    {% endif %}
   </div>
-  {% endif %}
 </div>
 
 <div class="row pt-1">

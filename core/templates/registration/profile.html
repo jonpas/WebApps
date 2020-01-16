@@ -12,7 +12,7 @@
     <a href="{% url 'core:profile-update' user.id %}">
       <button type="button" class="btn btn-primary">
         <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-edit"></i></span>
-        <span class="d-none d-sm-inline">Profile</span>
+        <span class="d-none d-sm-inline">Account</span>
       </button>
     </a>
   </div>
@@ -41,10 +41,18 @@
   </div>
 
   <div class="col-sm-5">
-    <h4>Transport</h4>
+    <h4>
+      Transport
+      {% if user.id == request.user.id %}
+      <a href="{% url 'transport:profile-update' user.transport_profile.id %}">
+        <span class="badge badge-secondary badge-pill"><i class="fa fa-edit"></i></span>
+      </a>
+      {% endif %}
+    </h4>
     <ul>
       <li>Carrier: {% if user.transport_profile.carrier %}Yes{% else %}No{% endif %}</li>
       <li>Passenger: {% if user.transport_profile.passenger %}Yes{% else %}No{% endif %}</li>
+      <li>Rating: {{ user.transport_profile.rating_avg }} / 5</li>
     </ul>
   </div>
 </div>

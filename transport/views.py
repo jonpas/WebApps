@@ -56,3 +56,14 @@ class TransportDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = 'transport/delete.html'
     model = models.Transport
     success_url = reverse_lazy('transport:index')
+
+
+class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'transport/profile_update.html'
+    model = models.Profile
+    fields = ['carrier', 'passenger']
+
+    def get_success_url(self):
+        return reverse_lazy('core:profile', kwargs={
+            'pk': self.object.user.id
+        })
