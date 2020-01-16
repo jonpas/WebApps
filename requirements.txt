@@ -13,6 +13,7 @@ daphne==2.4.1
 Django==3.0.2
 django-crispy-forms==1.8.1
 django-flatpickr==1.0.1
+django-multiselectfield==0.1.11
 hiredis==1.0.1
 hyperlink==19.0.0
 idna==2.8

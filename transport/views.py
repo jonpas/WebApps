@@ -5,6 +5,7 @@ from django import http
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from . import models
+from . import forms
 
 
 class TransportListView(LoginRequiredMixin, generic.ListView):
@@ -28,8 +29,8 @@ class TransportDetailView(LoginRequiredMixin, generic.DetailView):
 
 class TransportCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'transport/create.html'
+    form_class = forms.TransportForm
     model = models.Transport
-    fields = []
 
     def form_valid(self, form):
         form.instance.carrier = self.request.user
@@ -44,7 +45,7 @@ class TransportCreateView(LoginRequiredMixin, generic.CreateView):
 class TransportUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'transport/update.html'
     model = models.Transport
-    fields = []
+    form_class = forms.TransportForm
 
     def get_success_url(self):
         return reverse_lazy('transport:detail', kwargs={

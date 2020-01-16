@@ -2,11 +2,42 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from multiselectfield import MultiSelectField
 
 
 class Transport(models.Model):
+    class Location(models.TextChoices):
+        MARIBOR = 'MB'
+        LJUBLJANA = 'LJ'
+        KOPER = 'KP'
+        CELJE = 'CE'
+        MURSKA_SOBOTA = 'MS'
+
+    class VehicleType(models.TextChoices):
+        CAR = 'C'
+        VAN = 'V'
+        TRUCK = 'T'
+        LIMOUSINE = 'L'
+
+    class VehicleBrand(models.TextChoices):
+        MITSUBISHI = 'MITS'
+        AUDI = 'AUDI'
+        BMW = 'BMW'
+        CITROEN = 'CITR'
+
     carrier = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transport_carrier')
     passengers = models.ManyToManyField(User, blank=True, related_name='transport_passenger')
+    departure_time = models.DateTimeField()
+    departure_location = models.CharField(max_length=2, choices=Location.choices, default=Location.MARIBOR)
+    arrival_location = models.CharField(max_length=2, choices=Location.choices, default=Location.LJUBLJANA)
+    price = models.IntegerField(default=100)
+    max_passengers = models.IntegerField(default=1)
+    luggage_per_passenger = models.IntegerField(default=1)
+    vehicle_type = models.CharField(max_length=1, choices=VehicleType.choices, default=VehicleType.CAR)
+    vehicle_brand = models.CharField(max_length=4, choices=VehicleBrand.choices, default=VehicleBrand.MITSUBISHI)
+    vehicle_color = models.CharField(max_length=100, blank=True)
+    vehicle_registration = models.CharField(max_length=10, blank=True)
+    passing_locations = MultiSelectField(max_length=2, choices=Location.choices, blank=True)
 
     def __str__(self):
         return self.carrier.get_username()
