@@ -42,17 +42,9 @@ class Game(models.Model):
         strtoken = f'{color}-{token}'
         knock = False
 
-        # Apply move to state
-        # Check in base, move to entrance if found
+        # Check if in base, move to entrance if found
         if strtoken in self.state['bases'][color]:
-            # Knock
-            knock_token = self.state['fields'][ENTRANCES[color]]
-            if knock_token:
-                knock_color = self.token_color(knock_token)
-                knock_index = self.token_index(knock_token) - 1
-                self.state['bases'][knock_color][knock_index] = knock_token
-                knock = True
-
+            knock = self.move_knock(self.state['fields'][ENTRANCES[color]])
             self.state['fields'][ENTRANCES[color]] = strtoken
             self.state['bases'][color][token - 1] = None
 
@@ -61,20 +53,35 @@ class Game(models.Model):
             field_index = self.state['fields'].index(strtoken)
             move_to = self.field_wrap(field_index + roll)
 
-            # Knock
-            knock_token = self.state['fields'][move_to]
-            if knock_token:
-                knock_color = self.token_color(knock_token)
-                knock_index = self.token_index(knock_token) - 1
-                self.state['bases'][knock_color][knock_index] = knock_token
-                knock = True
+            # Move into home or further on the field
+            entrance_plus_index = self.entrance_wrap(color, field_index)
+            if field_index < entrance_plus_index and move_to >= ENTRANCES[color]:
+                move_to = self.field_wrap(move_to - entrance_plus_index)
+                self.state['homes'][color][move_to] = strtoken
+            else:
+                knock = self.move_knock(self.state['fields'][move_to])
+                self.state['fields'][move_to] = strtoken
 
-            self.state['fields'][move_to] = strtoken
             self.state['fields'][field_index] = None
 
-            # TODO Move into home
+        # Move further into home
+        elif strtoken in self.state['homes'][color]:
+            field_index = self.state['homes'][color].index(strtoken)
+            move_to = field_index + roll
+            self.state['homes'][color][move_to] = strtoken
+            self.state['homes'][color][field_index] = None
 
         return knock
+
+    def move_knock(self, knock_token):
+        # Knock enemy token out if one exists on that field
+        if knock_token:
+            knock_color = self.token_color(knock_token)
+            knock_index = self.token_index(knock_token) - 1
+            self.state['bases'][knock_color][knock_index] = knock_token
+            return True
+
+        return False
 
     def available_actions(self):
         color = self.color()
@@ -88,26 +95,38 @@ class Game(models.Model):
             for strtoken in self.filter(self.state['bases'][color]):
                 actions.append(f'move-{self.token_index(strtoken)}')
 
-        # Move any tokens further up the field
+        # Move any tokens further up the field or into home
         for field_index, strtoken in enumerate(self.state['fields']):
             if strtoken and color == self.token_color(strtoken):
                 move_to = self.field_wrap(field_index + roll)
                 field_to = self.state['fields'][move_to]
-                if not field_to or color not in field_to:
+
+                # Check if in range of home (not at start) or empty or enemy field
+                entrance_plus_index = self.entrance_wrap(color, field_index)
+                valid = True
+                if field_index < entrance_plus_index and move_to >= ENTRANCES[color]:
+                    move_to = self.field_wrap(move_to - entrance_plus_index)
+                    if move_to > 3:
+                        valid = False
+                    else:
+                        field_to = self.state['homes'][color][move_to]
+
+                if valid and (not field_to or color not in field_to):
                     actions.append(f'move-{self.token_index(strtoken)}')
-                    # TODO Limit to move into house
-                    # print(f'can move {strtoken} to f-{field_index + roll}')
 
-        # TODO Move any tokens into home or further in home
+        # Move tokens in home further into home
+        for field_index, strtoken in enumerate(self.state['homes'][color]):
+            if strtoken:
+                move_to = field_index + roll
+                if move_to <= 3:
+                    field_to = self.state['homes'][color][move_to]
+                    if not field_to:
+                        actions.append(f'move-{self.token_index(strtoken)}')
 
-        print(f'available_actions: {actions}')
         return actions
 
     def filter(self, l, color=None):
-        filtered = [x for x in l if x]
-        if color:
-            filtered = [x for x in filtered if self.token_color(x)]
-        return filtered
+        return [x for x in l if x]
 
     def token_color(self, strtoken):
         return strtoken.split('-')[0]
@@ -116,7 +135,14 @@ class Game(models.Model):
         return int(strtoken.split('-')[1])
 
     def field_wrap(self, field_index):
-        return field_index % 39
+        return field_index % (39 + 1)
+
+    def entrance_wrap(self, color, field_index):
+        # Helper entrance index on red's 39 -> 0 jump
+        # 34 is minimum breaking point
+        if color == 'red' and field_index > 34:
+            return ENTRANCES[color] + 40
+        return ENTRANCES[color]
 
 
 class Room(models.Model):
