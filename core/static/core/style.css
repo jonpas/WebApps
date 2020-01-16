@@ -2,6 +2,13 @@ h1, h2 {
     margin: 15px 0px 15px 0px;
 }
 
+hr {
+    background-image: -webkit-linear-gradient(left, transparent, #3F4247, transparent);
+    border: 0;
+    height: 1px;
+    margin: 22px 0;
+}
+
 .badge {
     font-size: 85%;
 }

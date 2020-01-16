@@ -1,11 +1,11 @@
 <a href="{% url 'transport:detail' transport.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 rounded-0 bg-primary mt-2">
   <div class="col text-left">
-    {{ transport.departure_location }} <i class="fa fa-caret-right text-success"></i> {{ transport.arrival_location }}
+    {{ transport.get_departure_location_display }} <i class="fa fa-caret-right text-success"></i> {{ transport.get_arrival_location_display }}
   </div>
   <div class="col text-center">
     {{ transport.departure_time|date:"j. b Y (H:i)" }}
   </div>
   <div class="col text-right">
-    <b>{{ transport.price }}</b> <i>({{ transport.carrier.get_username }})</i>
+    <b>{{ transport.price }} €</b> <i>({{ transport.carrier.get_username }})</i>
   </div>
 </a>

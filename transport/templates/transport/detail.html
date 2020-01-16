@@ -1,11 +1,17 @@
 {% extends 'core/base.html' %}
-{% load static %}
 
 {% block content %}
 
 <div class="row">
   <div class="col-8">
-    <h2>{% block title %}Transport: {{ transport.carrier.get_username }}{% endblock title %}</h2>
+    <h2>
+      {% if transport.completed %}
+      <span class="badge badge-success badge-pill"><i class="fa fa-check"></i></span>
+      {% else %}
+      <span class="badge badge-info badge-pill"><i class="fa fa-car"></i></span>
+      {% endif %}
+      {% block title %}Transport: {{ transport.departure_location }} <i class="fa fa-caret-right text-success"></i> {{ transport.arrival_location }}{% endblock title %}
+    </h2>
   </div>
 
   <div class="col-4 text-right mt-auto">
@@ -35,15 +41,107 @@
   </div>
 </div>
 
-<div class="row pt-1">
+<div class="row mt-2">
   <div class="col">
-    {% for passenger in transport.passengers.all %}
-    <a href="{% url 'core:profile' passenger.id %}">
+    <h4><b>{{ transport.get_departure_location_display }} <i class="fa fa-caret-right text-success"></i> {{ transport.get_arrival_location_display }}</b></h4>
+  </div>
+  <div class="col">
+    <b>{{ transport.price }} €</b>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    {{ transport.departure_time|date:"j. b Y (H:i)" }}
+  </div>
+  <div class="col">
+    Carrier:
+    <a href="{% url 'core:profile' transport.carrier.id %}">
       <span class="badge badge-success">
-        {{ passenger.get_username }}
+        {{ transport.carrier.get_username }}
       </span>
     </a>
-    {% endfor %}
+  </div>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col">
+    <h3>Passengers</h3>
+  </div>
+  <div class="col">
+    <span class="badge badge-{% if transport.free_seats > 0 %}success{% else %}secondary{% endif %} badge-pill"><i class="fa fa-sticky-note mr-1"></i>
+      <i>{{ transport.free_seats }} seat(s) left</i>
+    </span>
+    <span class="badge badge-warning badge-pill text-dark"><i class="fa fa-shopping-bag mr-1"></i>
+      <i>{{ transport.luggage_per_passenger }} bag(s) per passenger</i>
+    </span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h4>Confirmed:</h4>
+    <ul>
+      {% for passenger in transport.passengers.all %}
+      <li>
+        <a href="{% url 'core:profile' passenger.id %}">
+          <span class="badge badge-success">
+            {{ passenger.get_username }}
+          </span>
+        </a>
+      </li>
+      {% empty %}
+      <li><h5><i>None</i></h5></li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="col">
+    <h4>Awaiting Confirmation:</h4>
+    <ul>
+      {% for passenger in transport.passengers_confirmed.all %}
+      <li>
+        <a href="{% url 'core:profile' passenger.id %}">
+          <span class="badge badge-success">
+            {{ passenger.get_username }}
+          </span>
+        </a>
+      </li>
+      {% empty %}
+      <li><h5><i>None</i></h5></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col">
+    <h3>Other</h3>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h4>Vehicle Information:</h4>
+    <ul>
+      <li>Type: <b>{{ transport.get_vehicle_type_display }}</b></li>
+      <li>Brand: <b>{{ transport.get_vehicle_brand_display }}</b></li>
+      <li>Color: <b>{{ transport.vehicle_color }}</b></li>
+      <li>Registration: <b>{{ transport.vehicle_registration }}</b></li>
+    </ul>
+  </div>
+  <div class="col">
+    <h4>Stops:</h4>
+    <ul>
+      {% for stop in transport.stops_display %}
+      <li>{{ stop }}</li>
+      {% empty %}
+      <li><h5><i>None</i></h5></li>
+      {% endfor %}
+    </ul>
   </div>
 </div>
 

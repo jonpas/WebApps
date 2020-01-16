@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from multiselectfield import MultiSelectField
 
 
@@ -27,24 +28,33 @@ class Transport(models.Model):
 
     carrier = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transport_carrier')
     passengers = models.ManyToManyField(User, blank=True, related_name='transport_passenger')
+    passengers_confirmed = models.ManyToManyField(User, blank=True,
+                                                  related_name='transport_passenger_confirmed')
     departure_time = models.DateTimeField()
     departure_location = models.CharField(max_length=2, choices=Location.choices, default=Location.MARIBOR)
     arrival_location = models.CharField(max_length=2, choices=Location.choices, default=Location.LJUBLJANA)
     price = models.IntegerField(default=100)
     max_passengers = models.IntegerField(default=1)
     luggage_per_passenger = models.IntegerField(default=1)
-    vehicle_type = models.CharField(max_length=1, choices=VehicleType.choices, default=VehicleType.CAR)
-    vehicle_brand = models.CharField(max_length=4, choices=VehicleBrand.choices, default=VehicleBrand.MITSUBISHI)
+    vehicle_type = models.CharField(max_length=1, choices=VehicleType.choices, blank=True)
+    vehicle_brand = models.CharField(max_length=4, choices=VehicleBrand.choices, blank=True)
     vehicle_color = models.CharField(max_length=100, blank=True)
     vehicle_registration = models.CharField(max_length=10, blank=True)
-    passing_locations = MultiSelectField(max_length=2, choices=Location.choices, blank=True)
+    passing_locations = MultiSelectField(max_length=2, choices=Location.choices)
     completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.carrier.get_username()
+        return f'{self.departure_location} > {self.arrival_location} ({self.carrier.get_username()})'
 
     def __repr__(self):
         return f'Transport [{self.id}]: {self.carrier} ({self.passengers.all()})'
+
+    def free_seats(self):
+        return self.max_passengers - self.passengers_confirmed.count()
+
+    def stops_display(self):
+        return [self.Location(stop).label
+                for stop in self.passing_locations]
 
 
 class Profile(models.Model):
