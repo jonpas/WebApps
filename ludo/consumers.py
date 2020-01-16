@@ -325,7 +325,7 @@ class GameConsumer(WebsocketConsumer):
                 'id': room_model.game.player.id,
                 'name': room_model.game.player.get_username()
             },
-            'knock': False,
+            'knock': knock,
             'timeout': TIMEOUT
         }
 

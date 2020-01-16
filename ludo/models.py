@@ -40,10 +40,19 @@ class Game(models.Model):
         color = self.color()
         roll = self.rolls[f'{self.player.id}']
         strtoken = f'{color}-{token}'
+        knock = False
 
         # Apply move to state
         # Check in base, move to entrance if found
         if strtoken in self.state['bases'][color]:
+            # Knock
+            knock_token = self.state['fields'][ENTRANCES[color]]
+            if knock_token:
+                knock_color = self.token_color(knock_token)
+                knock_index = self.token_index(knock_token) - 1
+                self.state['bases'][knock_color][knock_index] = knock_token
+                knock = True
+
             self.state['fields'][ENTRANCES[color]] = strtoken
             self.state['bases'][color][token - 1] = None
 
@@ -51,13 +60,19 @@ class Game(models.Model):
         elif strtoken in self.state['fields']:
             field_index = self.state['fields'].index(strtoken)
             move_to = self.field_wrap(field_index + roll)
+
+            # Knock
+            knock_token = self.state['fields'][move_to]
+            if knock_token:
+                knock_color = self.token_color(knock_token)
+                knock_index = self.token_index(knock_token) - 1
+                self.state['bases'][knock_color][knock_index] = knock_token
+                knock = True
+
             self.state['fields'][move_to] = strtoken
             self.state['fields'][field_index] = None
 
-        # TODO Move into home
-
-        # TODO Knock another token
-        knock = False
+            # TODO Move into home
 
         return knock
 
@@ -67,8 +82,9 @@ class Game(models.Model):
 
         actions = []
 
-        # Spawn tokens on 6 if entrance clear
-        if roll == 6 and not self.state['fields'][ENTRANCES[color]]:
+        # Spawn tokens on 6 if entrance clear of friendlies
+        entrance = self.state['fields'][ENTRANCES[color]]
+        if roll == 6 and (not entrance or color not in entrance):
             for strtoken in self.filter(self.state['bases'][color]):
                 actions.append(f'move-{self.token_index(strtoken)}')
 
