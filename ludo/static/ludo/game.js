@@ -96,7 +96,7 @@ function toggleActions(allowedActions) {
 function playRollEffects() {
     // Sound effect
     const audio = document.getElementById('audio-roll');
-    // TODO audio.play();
+    audio.play();
 
     // Animation
     const rollIcon = document.getElementById('roll-icon');
@@ -111,7 +111,7 @@ function playRollEffects() {
 function playKnockEffects() {
     // Sound effect
     const audio = document.getElementById('audio-knock');
-    // TODO audio.play();
+    audio.play();
 
     // Animation
     board.classList.add('shake');
@@ -125,7 +125,7 @@ function playKnockEffects() {
 function playWinEffects() {
     // Sound effect
     const audio = document.getElementById('audio-win');
-    // TODO audio.play();
+    audio.play();
 
     // Animation
     board.style.backgroundColor = 'green';
