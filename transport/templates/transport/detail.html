@@ -16,10 +16,27 @@
 
   <div class="col-4 text-right mt-auto">
     {% if transport.carrier.id == user.id %}
-    <button type="button" class="btn btn-success disabled" id="start-button">
-      <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-rocket"></i></span>
-      <span class="d-none d-md-inline">Start</span>
-    </button>
+    {% if transport.completed %}
+    <a href=""> <!-- TODO -->
+      <button type="button" class="btn btn-success">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-users"></i></span>
+        <span class="d-none d-md-inline">Rate</span>
+      </button>
+    </a>
+    {% else %}
+    <a href=""> <!-- TODO -->
+      <button type="button" class="btn btn-success">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-users"></i></span>
+        <span class="d-none d-md-inline">Confirm</span>
+      </button>
+    </a>
+    <a href=""> <!-- TODO -->
+      <button type="button" class="btn btn-success">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-car"></i></span>
+        <span class="d-none d-md-inline">Depart</span>
+      </button>
+    </a>
+    {% endif %}
     <a href="{% url 'transport:update' transport.id %}">
       <button type="button" class="btn btn-primary">
         <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-edit"></i></span>
@@ -33,10 +50,30 @@
       </button>
     </a>
     {% elif user.transport_profile.passenger %}
-    <button type="button" class="btn btn-success" id="join-button">
-      <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-car"></i></span>
-      <span class="d-none d-md-inline">Reserve</span>
-    </button>
+    {% if transport.completed %}
+    <a href=""> <!-- TODO -->
+      <button type="button" class="btn btn-success">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-car"></i></span>
+        <span class="d-none d-md-inline">Rate</span>
+      </button>
+    </a>
+    {% else %}
+    {% if user in transport.passengers.all %}
+    <a href=""> <!-- TODO -->
+      <button type="button" class="btn btn-success">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-user"></i></span>
+        <span class="d-none d-md-inline">Reserve</span>
+      </button>
+    </a>
+    {% else %}
+    <a href=""> <!-- TODO -->
+      <button type="button" class="btn btn-danger">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-close"></i></span>
+        <span class="d-none d-md-inline">Cancel</span>
+      </button>
+    </a>
+    {% endif %}
+    {% endif %}
     {% endif %}
   </div>
 </div>
@@ -70,7 +107,7 @@
     <h3>Passengers</h3>
   </div>
   <div class="col">
-    <span class="badge badge-{% if transport.free_seats > 0 %}success{% else %}secondary{% endif %} badge-pill"><i class="fa fa-sticky-note mr-1"></i>
+    <span class="badge badge-{% if transport.free_seats > 0 %}success{% else %}secondary{% endif %} badge-pill"><i class="fa fa-user mr-1"></i>
       <i>{{ transport.free_seats }} seat(s) left</i>
     </span>
     <span class="badge badge-warning badge-pill text-dark"><i class="fa fa-shopping-bag mr-1"></i>
@@ -125,15 +162,6 @@
 
 <div class="row">
   <div class="col">
-    <h4>Vehicle Information:</h4>
-    <ul>
-      <li>Type: <b>{{ transport.get_vehicle_type_display }}</b></li>
-      <li>Brand: <b>{{ transport.get_vehicle_brand_display }}</b></li>
-      <li>Color: <b>{{ transport.vehicle_color }}</b></li>
-      <li>Registration: <b>{{ transport.vehicle_registration }}</b></li>
-    </ul>
-  </div>
-  <div class="col">
     <h4>Stops:</h4>
     <ul>
       {% for stop in transport.stops_display %}
@@ -141,6 +169,15 @@
       {% empty %}
       <li><h5><i>None</i></h5></li>
       {% endfor %}
+    </ul>
+  </div>
+  <div class="col">
+    <h4>Vehicle Information:</h4>
+    <ul>
+      <li>Type: <b>{{ transport.get_vehicle_type_display }}</b></li>
+      <li>Brand: <b>{{ transport.get_vehicle_brand_display }}</b></li>
+      <li>Color: <b>{{ transport.vehicle_color }}</b></li>
+      <li>Registration: <b>{{ transport.vehicle_registration }}</b></li>
     </ul>
   </div>
 </div>

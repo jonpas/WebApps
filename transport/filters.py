@@ -14,6 +14,7 @@ class TransportFilter(django_filters.FilterSet):
             'departure_location': ['exact'],
             'arrival_location': ['exact'],
             'price': ['exact', 'lte', 'gte'],
+            'completed': ['exact'],
         }
         filter_overrides = {
             db.models.DateTimeField: {

@@ -30,6 +30,8 @@ class Transport(models.Model):
     passengers = models.ManyToManyField(User, blank=True, related_name='transport_passenger')
     passengers_confirmed = models.ManyToManyField(User, blank=True,
                                                   related_name='transport_passenger_confirmed')
+    passengers_picked = models.ManyToManyField(User, blank=True,
+                                               related_name='transport_passenger_picked')
     departure_time = models.DateTimeField()
     departure_location = models.CharField(max_length=2, choices=Location.choices, default=Location.MARIBOR)
     arrival_location = models.CharField(max_length=2, choices=Location.choices, default=Location.LJUBLJANA)
@@ -40,7 +42,7 @@ class Transport(models.Model):
     vehicle_brand = models.CharField(max_length=4, choices=VehicleBrand.choices, blank=True)
     vehicle_color = models.CharField(max_length=100, blank=True)
     vehicle_registration = models.CharField(max_length=10, blank=True)
-    passing_locations = MultiSelectField(max_length=2, choices=Location.choices)
+    passing_locations = MultiSelectField(max_length=2, choices=Location.choices, blank=True)
     completed = models.BooleanField(default=False)
 
     def __str__(self):
