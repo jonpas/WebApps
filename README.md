@@ -25,11 +25,11 @@ _`ludo` (requires: `core`, login)_
 
 Turn-based game application featuring interactive multiplayer board game [ludo](https://en.wikipedia.org/wiki/Ludo_(board_game)) with lobbies, login, statistics tracking, animations and sound effects.
 
-### Transporter
+### Transports
 
 _`transport` (requires: `core`, login)_
 
-Transportation helper application allowing registered users to offer transportation, search all offers using advanced search features, reservations, ability to track real-time GPS location of the transporter and grading.
+Transportation helper application allowing registered users to offer transports, search all offers using advanced search features, passenger reservations and ratings.
 
 
 ## Helper Applications
