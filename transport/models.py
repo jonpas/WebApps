@@ -32,6 +32,8 @@ class Transport(models.Model):
                                                   related_name='transport_passenger_confirmed')
     passengers_picked = models.ManyToManyField(User, blank=True,
                                                related_name='transport_passenger_picked')
+    attendees_rated = models.ManyToManyField(User, blank=True,
+                                             related_name='transport_attendee_rated')
     departure_time = models.DateTimeField()
     departure_location = models.CharField(max_length=2, choices=Location.choices, default=Location.MARIBOR)
     arrival_location = models.CharField(max_length=2, choices=Location.choices, default=Location.LJUBLJANA)
@@ -43,8 +45,8 @@ class Transport(models.Model):
     vehicle_color = models.CharField(max_length=100, blank=True)
     vehicle_registration = models.CharField(max_length=10, blank=True)
     passing_locations = MultiSelectField(max_length=2, choices=Location.choices, blank=True)
-    completed = models.BooleanField(default=False)
     departed = models.BooleanField(default=False)
+    arrived = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.departure_location} > {self.arrival_location} ({self.carrier.get_username()})'
@@ -86,6 +88,19 @@ class Profile(models.Model):
         if amount <= 0:
             return 0
         return round(total / amount, 1)
+
+    def add_rating(self, ratings):
+        for rating in ratings:
+            if rating == 1:
+                self.rating1 += 1
+            if rating == 2:
+                self.rating2 += 1
+            if rating == 3:
+                self.rating3 += 1
+            if rating == 4:
+                self.rating4 += 1
+            if rating == 5:
+                self.rating5 += 1
 
 
 @receiver(post_save, sender=User)

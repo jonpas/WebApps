@@ -5,7 +5,7 @@
 <div class="row">
   <div class="col-6">
     <h2>
-      {% if transport.completed %}
+      {% if transport.arrived %}
       <span class="badge badge-success badge-pill"><i class="fa fa-car"></i></span>
       {% elif transport.departed %}
       <span class="badge badge-info badge-pill"><i class="fa fa-car"></i></span>
@@ -18,14 +18,7 @@
 
   <div class="col-6 text-right mt-auto">
     {% if transport.carrier.id == user.id %}
-      {% if transport.completed %}
-      <a href=""> <!-- TODO -->
-        <button type="button" class="btn btn-success">
-          <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-users"></i></span>
-          <span class="d-none d-md-inline">Rate</span>
-        </button>
-      </a>
-      {% else %}
+      {% if not transport.arrived %}
       <a href="{% url 'transport:complete' transport.id %}">
         <button type="button" class="btn btn-success">
           <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-check"></i></span>
@@ -59,33 +52,29 @@
           <span class="d-none d-md-inline">Transport</span>
         </button>
       </a>
-
+    {% elif user in transport.passengers_confirmed.all and transport.carrier not in transport.attendees_rated.all %}
+    <a href="{% url 'transport:rate' transport.id transport.carrier.id %}">
+      <button type="button" class="btn btn-success">
+        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-users"></i></span>
+        <span class="d-none d-md-inline">Rate</span>
+      </button>
+    </a>
     {% elif user.transport_profile.passenger %}
-
-      {% if transport.completed %}
-      <a href=""> <!-- TODO -->
-        <button type="button" class="btn btn-success">
-          <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-car"></i></span>
-          <span class="d-none d-md-inline">Rate</span>
-        </button>
-      </a>
-      {% else %}
-        {% if not transport.departed %}
-          {% if user in transport.passengers.all or user in transport.passengers_confirmed.all %}
-          <a href="{% url 'transport:cancel' transport.id %}">
-            <button type="button" class="btn btn-danger">
-              <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-close"></i></span>
-              <span class="d-none d-md-inline">Cancel</span>
-            </button>
-          </a>
-          {% else %}
-          <a href="{% url 'transport:reserve' transport.id %}">
-            <button type="button" class="btn btn-success">
-              <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-user"></i></span>
-              <span class="d-none d-md-inline">Reserve</span>
-            </button>
-          </a>
-          {% endif %}
+      {% if not transport.arrived and not transport.departed %}
+        {% if user in transport.passengers.all or user in transport.passengers_confirmed.all %}
+        <a href="{% url 'transport:cancel' transport.id %}">
+          <button type="button" class="btn btn-danger">
+            <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-close"></i></span>
+            <span class="d-none d-md-inline">Cancel</span>
+          </button>
+        </a>
+        {% else %}
+        <a href="{% url 'transport:reserve' transport.id %}">
+          <button type="button" class="btn btn-success">
+            <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-user"></i></span>
+            <span class="d-none d-md-inline">Reserve</span>
+          </button>
+        </a>
         {% endif %}
       {% endif %}
     {% endif %}
@@ -137,16 +126,21 @@
       {% for passenger in transport.passengers_confirmed.all %}
       <li>
         <a href="{% url 'core:profile' passenger.id %}">
+          {% if transport.departed and passenger not in transport.passengers_picked.all %}
+          <span class="badge badge-danger">
+          {% else %}
           <span class="badge badge-success">
-            {% if transport.departed %}
-              {% if passenger in transport.passengers_picked.all %}
-              <span class="badge badge-info"><i class="fa fa-check"></i></span>
-              {% else %}
-              <span class="badge badge-danger"><i class="fa fa-close"></i></span>
-              {% endif %}
-            {% endif %}
+          {% endif %}
             {{ passenger.get_username }}
           </span>
+          {% if transport.arrived and user.id is transport.carrier.id and passenger not in transport.attendees_rated.all and passenger in transport.passengers_picked.all %}
+          <a href="{% url 'transport:rate' transport.id passenger.id %}">
+            <button type="button" class="btn btn-success btn-sm">
+              <span class="badge badge-warning badge-pill mr-1"><i class="fa fa-car"></i></span>
+              <span class="d-none d-md-inline">Rate</span>
+            </button>
+          </a>
+          {% endif %}
         </a>
       </li>
       {% empty %}

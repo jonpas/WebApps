@@ -3,6 +3,7 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django import http
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django_filters.views import FilterView
 
 from . import models
@@ -15,7 +16,7 @@ class TransportListView(LoginRequiredMixin, generic.ListView):
     model = models.Transport
 
     def get_queryset(self):
-        return reversed(self.model.objects.filter(completed=False).order_by('-id')[:15])  # Last 15 published
+        return reversed(self.model.objects.filter(arrived=False).order_by('-id')[:15])  # Last 15 published
 
 
 class TransportFilterView(LoginRequiredMixin, FilterView):
@@ -173,8 +174,48 @@ class TransportCompleteView(LoginRequiredMixin, generic.UpdateView):
         return context
 
     def form_valid(self, form):
-        self.object.completed = True
+        self.object.arrived = True
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('transport:detail', kwargs={
+            'pk': self.object.id,
+        })
+
+
+class TransportRateView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'transport/passenger.html'
+    model = models.Transport
+    form_class = forms.TransportRateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Rate Transport'
+        return context
+
+    def form_valid(self, form):
+        ratee_id = self.kwargs['user']
+
+        social = int(form.cleaned_data['social'])
+        on_time = int(form.cleaned_data['on_time'])
+        luggage = int(form.cleaned_data['luggage'])
+
+        if ratee_id == self.object.carrier.id:
+            # Rating carrier
+            self.object.carrier.transport_profile.add_rating([social, on_time, luggage])
+            self.object.carrier.transport_profile.save()
+        else:
+            # Rating passenger
+            passenger = self.object.passengers_picked.get(id=ratee_id)
+            passenger.transport_profile.add_rating([social, on_time, luggage])
+            passenger.transport_profile.save()
+
+        self.object.attendees_rated.add(
+            User.objects.get(id=ratee_id)
+        )
+        self.object.save()  # No parent form_valid called to save it
+
+        return http.HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse_lazy('transport:detail', kwargs={

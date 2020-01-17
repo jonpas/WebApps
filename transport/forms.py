@@ -8,7 +8,7 @@ from . import models
 class TransportForm(forms.ModelForm):
     class Meta:
         model = models.Transport
-        exclude = ['carrier', 'passengers', 'passengers_confirmed', 'passengers_picked']
+        exclude = ['carrier', 'passengers', 'passengers_confirmed', 'passengers_picked', 'attendees_rated']
         widgets = {
             'departure_time': DateTimePickerInput(),
         }
@@ -38,3 +38,25 @@ class TransportDepartForm(forms.ModelForm):
             self.fields['passengers_confirmed'].queryset = models.Transport.objects.get(
                 id=self.instance.id
             ).passengers_confirmed.all()
+
+
+class TransportRateForm(forms.ModelForm):
+    class Meta:
+        model = models.Transport
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        self.user_id = kwargs.pop('user_id', None)
+        super().__init__(*args, **kwargs)
+
+    RATING_CHOICES = [
+        (5, '5'),
+        (4, '4'),
+        (3, '3'),
+        (2, '2'),
+        (1, '1'),
+    ]
+
+    social = forms.ChoiceField(choices=RATING_CHOICES)
+    on_time = forms.ChoiceField(choices=RATING_CHOICES)
+    luggage = forms.ChoiceField(choices=RATING_CHOICES)

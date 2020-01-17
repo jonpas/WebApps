@@ -16,5 +16,6 @@ urlpatterns = [
     path('<int:pk>/confirm/', views.TransportConfirmView.as_view(), name='confirm'),
     path('<int:pk>/depart/', views.TransportDepartView.as_view(), name='depart'),
     path('<int:pk>/complete/', views.TransportCompleteView.as_view(), name='complete'),
+    path('<int:pk>/rate/<int:user>', views.TransportRateView.as_view(), name='rate'),
     path('profile/<int:pk>/edit/', views.ProfileUpdateView.as_view(), name='profile-update'),
 ]
