@@ -3,77 +3,91 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-8">
+  <div class="col-6">
     <h2>
       {% if transport.completed %}
-      <span class="badge badge-success badge-pill"><i class="fa fa-check"></i></span>
-      {% else %}
+      <span class="badge badge-success badge-pill"><i class="fa fa-car"></i></span>
+      {% elif transport.departed %}
       <span class="badge badge-info badge-pill"><i class="fa fa-car"></i></span>
+      {% else %}
+      <span class="badge badge-secondary badge-pill"><i class="fa fa-car"></i></span>
       {% endif %}
       {% block title %}Transport: {{ transport.departure_location }} <i class="fa fa-caret-right text-success"></i> {{ transport.arrival_location }}{% endblock title %}
     </h2>
   </div>
 
-  <div class="col-4 text-right mt-auto">
+  <div class="col-6 text-right mt-auto">
     {% if transport.carrier.id == user.id %}
-    {% if transport.completed %}
-    <a href=""> <!-- TODO -->
-      <button type="button" class="btn btn-success">
-        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-users"></i></span>
-        <span class="d-none d-md-inline">Rate</span>
-      </button>
-    </a>
-    {% else %}
-    <a href=""> <!-- TODO -->
-      <button type="button" class="btn btn-success">
-        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-users"></i></span>
-        <span class="d-none d-md-inline">Confirm</span>
-      </button>
-    </a>
-    <a href=""> <!-- TODO -->
-      <button type="button" class="btn btn-success">
-        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-car"></i></span>
-        <span class="d-none d-md-inline">Depart</span>
-      </button>
-    </a>
-    {% endif %}
-    <a href="{% url 'transport:update' transport.id %}">
-      <button type="button" class="btn btn-primary">
-        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-edit"></i></span>
-        <span class="d-none d-md-inline">Transport</span>
-      </button>
-    </a>
-    <a href="{% url 'transport:delete' transport.id %}">
-      <button type="button" class="btn btn-primary">
-        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>
-        <span class="d-none d-md-inline">Transport</span>
-      </button>
-    </a>
+      {% if transport.completed %}
+      <a href=""> <!-- TODO -->
+        <button type="button" class="btn btn-success">
+          <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-users"></i></span>
+          <span class="d-none d-md-inline">Rate</span>
+        </button>
+      </a>
+      {% else %}
+      <a href="{% url 'transport:complete' transport.id %}">
+        <button type="button" class="btn btn-success">
+          <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-check"></i></span>
+          <span class="d-none d-md-inline">Complete</span>
+        </button>
+      </a>
+        {% if not transport.departed %}
+        <a href="{% url 'transport:depart' transport.id %}">
+          <button type="button" class="btn btn-success">
+            <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-car"></i></span>
+            <span class="d-none d-md-inline">Depart</span>
+          </button>
+        </a>
+        <a href="{% url 'transport:confirm' transport.id %}">
+          <button type="button" class="btn btn-info">
+            <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-users"></i></span>
+            <span class="d-none d-md-inline">Confirm</span>
+          </button>
+        </a>
+        {% endif %}
+      {% endif %}
+      <a href="{% url 'transport:update' transport.id %}">
+        <button type="button" class="btn btn-primary">
+          <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-edit"></i></span>
+          <span class="d-none d-md-inline">Transport</span>
+        </button>
+      </a>
+      <a href="{% url 'transport:delete' transport.id %}">
+        <button type="button" class="btn btn-primary">
+          <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-trash"></i></span>
+          <span class="d-none d-md-inline">Transport</span>
+        </button>
+      </a>
+
     {% elif user.transport_profile.passenger %}
-    {% if transport.completed %}
-    <a href=""> <!-- TODO -->
-      <button type="button" class="btn btn-success">
-        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-car"></i></span>
-        <span class="d-none d-md-inline">Rate</span>
-      </button>
-    </a>
-    {% else %}
-    {% if user in transport.passengers.all %}
-    <a href=""> <!-- TODO -->
-      <button type="button" class="btn btn-success">
-        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-user"></i></span>
-        <span class="d-none d-md-inline">Reserve</span>
-      </button>
-    </a>
-    {% else %}
-    <a href=""> <!-- TODO -->
-      <button type="button" class="btn btn-danger">
-        <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-close"></i></span>
-        <span class="d-none d-md-inline">Cancel</span>
-      </button>
-    </a>
-    {% endif %}
-    {% endif %}
+
+      {% if transport.completed %}
+      <a href=""> <!-- TODO -->
+        <button type="button" class="btn btn-success">
+          <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-car"></i></span>
+          <span class="d-none d-md-inline">Rate</span>
+        </button>
+      </a>
+      {% else %}
+        {% if not transport.departed %}
+          {% if user in transport.passengers.all or user in transport.passengers_confirmed.all %}
+          <a href="{% url 'transport:cancel' transport.id %}">
+            <button type="button" class="btn btn-danger">
+              <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-close"></i></span>
+              <span class="d-none d-md-inline">Cancel</span>
+            </button>
+          </a>
+          {% else %}
+          <a href="{% url 'transport:reserve' transport.id %}">
+            <button type="button" class="btn btn-success">
+              <span class="badge badge-secondary badge-pill mr-1"><i class="fa fa-user"></i></span>
+              <span class="d-none d-md-inline">Reserve</span>
+            </button>
+          </a>
+          {% endif %}
+        {% endif %}
+      {% endif %}
     {% endif %}
   </div>
 </div>
@@ -83,7 +97,7 @@
     <h4><b>{{ transport.get_departure_location_display }} <i class="fa fa-caret-right text-success"></i> {{ transport.get_arrival_location_display }}</b></h4>
   </div>
   <div class="col">
-    <b>{{ transport.price }} €</b>
+    <h4><b>{{ transport.price }} €</b></h4>
   </div>
 </div>
 <div class="row">
@@ -120,10 +134,17 @@
   <div class="col">
     <h4>Confirmed:</h4>
     <ul>
-      {% for passenger in transport.passengers.all %}
+      {% for passenger in transport.passengers_confirmed.all %}
       <li>
         <a href="{% url 'core:profile' passenger.id %}">
           <span class="badge badge-success">
+            {% if transport.departed %}
+              {% if passenger in transport.passengers_picked.all %}
+              <span class="badge badge-info"><i class="fa fa-check"></i></span>
+              {% else %}
+              <span class="badge badge-danger"><i class="fa fa-close"></i></span>
+              {% endif %}
+            {% endif %}
             {{ passenger.get_username }}
           </span>
         </a>
@@ -137,7 +158,7 @@
   <div class="col">
     <h4>Awaiting Confirmation:</h4>
     <ul>
-      {% for passenger in transport.passengers_confirmed.all %}
+      {% for passenger in transport.passengers.all %}
       <li>
         <a href="{% url 'core:profile' passenger.id %}">
           <span class="badge badge-success">

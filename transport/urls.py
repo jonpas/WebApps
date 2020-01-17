@@ -11,5 +11,10 @@ urlpatterns = [
     path('new/', views.TransportCreateView.as_view(), name='create'),
     path('<int:pk>/edit/', views.TransportUpdateView.as_view(), name='update'),
     path('<int:pk>/delete/', views.TransportDeleteView.as_view(), name='delete'),
+    path('<int:pk>/reserve/', views.TransportReserveView.as_view(), name='reserve'),
+    path('<int:pk>/cancel/', views.TransportCancelView.as_view(), name='cancel'),
+    path('<int:pk>/confirm/', views.TransportConfirmView.as_view(), name='confirm'),
+    path('<int:pk>/depart/', views.TransportDepartView.as_view(), name='depart'),
+    path('<int:pk>/complete/', views.TransportCompleteView.as_view(), name='complete'),
     path('profile/<int:pk>/edit/', views.ProfileUpdateView.as_view(), name='profile-update'),
 ]

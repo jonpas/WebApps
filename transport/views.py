@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.views import generic
 from django.urls import reverse_lazy
 from django import http
@@ -58,6 +58,12 @@ class TransportUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = models.Transport
     form_class = forms.TransportForm
 
+    def form_valid(self, form):
+        # Clear picked and confirmed users when re-opening transport
+        if self.object.departed and not form.cleaned_data['departed']:
+            self.object.passengers_picked.clear()
+        return super().form_valid(form)
+
     def get_success_url(self):
         return reverse_lazy('transport:detail', kwargs={
             'pk': self.object.id,
@@ -68,6 +74,112 @@ class TransportDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = 'transport/delete.html'
     model = models.Transport
     success_url = reverse_lazy('transport:index')
+
+
+class TransportReserveView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'transport/passenger.html'
+    model = models.Transport
+    fields = []
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Reserve Transport'
+        return context
+
+    def form_valid(self, form):
+        self.object.passengers.add(self.request.user)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('transport:detail', kwargs={
+            'pk': self.object.id,
+        })
+
+
+class TransportCancelView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'transport/passenger.html'
+    model = models.Transport
+    fields = []
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Cancel Transport'
+        return context
+
+    def form_valid(self, form):
+        self.object.passengers.remove(self.request.user)
+        self.object.passengers_confirmed.remove(self.request.user)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('transport:detail', kwargs={
+            'pk': self.object.id,
+        })
+
+
+class TransportConfirmView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'transport/passenger.html'
+    model = models.Transport
+    form_class = forms.TransportConfirmForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Confirm Passengers'
+        return context
+
+    def form_valid(self, form):
+        for user in form.cleaned_data['passengers']:
+            self.object.passengers_confirmed.add(user)
+            self.object.passengers.remove(user)
+        return http.HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('transport:detail', kwargs={
+            'pk': self.object.id,
+        })
+
+
+class TransportDepartView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'transport/passenger.html'
+    model = models.Transport
+    form_class = forms.TransportDepartForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Depart Transport'
+        return context
+
+    def form_valid(self, form):
+        for user in form.cleaned_data['passengers_confirmed']:
+            self.object.passengers_picked.add(user)
+        self.object.departed = True
+        self.object.save()  # No parent form_valid called to save it
+        return http.HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('transport:detail', kwargs={
+            'pk': self.object.id,
+        })
+
+
+class TransportCompleteView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'transport/passenger.html'
+    model = models.Transport
+    fields = []
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Complete Transport'
+        return context
+
+    def form_valid(self, form):
+        self.object.completed = True
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('transport:detail', kwargs={
+            'pk': self.object.id,
+        })
 
 
 class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):

@@ -35,8 +35,8 @@ class Transport(models.Model):
     departure_time = models.DateTimeField()
     departure_location = models.CharField(max_length=2, choices=Location.choices, default=Location.MARIBOR)
     arrival_location = models.CharField(max_length=2, choices=Location.choices, default=Location.LJUBLJANA)
-    price = models.IntegerField(default=100)
-    max_passengers = models.IntegerField(default=1)
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=15.95)
+    max_passengers = models.IntegerField(default=2)
     luggage_per_passenger = models.IntegerField(default=1)
     vehicle_type = models.CharField(max_length=1, choices=VehicleType.choices, blank=True)
     vehicle_brand = models.CharField(max_length=4, choices=VehicleBrand.choices, blank=True)
@@ -44,6 +44,7 @@ class Transport(models.Model):
     vehicle_registration = models.CharField(max_length=10, blank=True)
     passing_locations = MultiSelectField(max_length=2, choices=Location.choices, blank=True)
     completed = models.BooleanField(default=False)
+    departed = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.departure_location} > {self.arrival_location} ({self.carrier.get_username()})'
